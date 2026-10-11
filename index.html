@@ -8,24 +8,23 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PliyPay">
 <meta name="mobile-web-app-capable" content="yes">
-<title>PliyPay — Перевод валюты</title>
+<meta name="description" content="PliyPay — мультивалютный кошелёк и переводы">
+<title>PliyPay — Мультивалютный кошелёк</title>
+
+<!-- Иконка через inline SVG (base64 data URI) -->
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM2NjdlZWEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM3NjRiYTIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTUlIiBmb250LXNpemU9IjI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCI+8J+SsTwvdGV4dD48L3N2Zz4=">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM2NjdlZWEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM3NjRiYTIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTUlIiBmb250LXNpemU9IjI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCI+8J+SsTwvdGV4dD48L3N2Zz4=">
+
 <style>
-/* ============================================================
-   БАЗОВЫЕ СТИЛИ + МОБИЛЬНАЯ ОПТИМИЗАЦИЯ
-   ============================================================ */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Tahoma, Geneva, Verdana, sans-serif;
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
 }
 
-html, body {
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
-}
+html, body { overscroll-behavior: none; -webkit-overflow-scrolling: touch; }
 
 body {
     background: #f0f2f5;
@@ -36,16 +35,9 @@ body {
 }
 
 .hidden { display: none !important; }
+button, .nav-item, .auth-tab { user-select: none; -webkit-user-select: none; }
 
-/* Запрет выделения текста на кнопках */
-button, .nav-item, .auth-tab {
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-/* ============================================================
-   ЭКРАН АВТОРИЗАЦИИ
-   ============================================================ */
+/* АВТОРИЗАЦИЯ */
 .auth-wrapper {
     min-height: 100vh;
     min-height: 100dvh;
@@ -114,19 +106,11 @@ button, .nav-item, .auth-tab {
 
 .auth-form { display: none; }
 .auth-form.active { display: block; animation: fadeIn 0.3s; }
-
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-.demo-hint {
-    text-align: center;
-    color: #999;
-    font-size: 13px;
-    margin-top: 15px;
-}
+.demo-hint { text-align: center; color: #999; font-size: 13px; margin-top: 15px; }
 
-/* ============================================================
-   ФОРМЫ И КНОПКИ
-   ============================================================ */
+/* ФОРМЫ */
 .form-group { margin-bottom: 18px; }
 
 .form-group label {
@@ -143,7 +127,7 @@ button, .nav-item, .auth-tab {
     padding: 14px 16px;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
-    font-size: 16px; /* ВАЖНО: 16px предотвращает zoom на iOS */
+    font-size: 16px;
     transition: all 0.3s;
     outline: none;
     background: white;
@@ -160,8 +144,7 @@ button, .nav-item, .auth-tab {
     padding-right: 40px;
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.form-group input:focus, .form-group select:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
 }
@@ -178,54 +161,26 @@ button, .nav-item, .auth-tab {
     transition: all 0.2s;
     width: 100%;
     min-height: 54px;
-    user-select: none;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-}
+.btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+.btn-primary:active { transform: scale(0.98); }
 
-.btn-primary:active {
-    transform: scale(0.98);
-    box-shadow: 0 5px 15px rgba(102,126,234,0.4);
-}
+.btn-success { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+.btn-success:active { transform: scale(0.98); }
 
-.btn-success {
-    background: linear-gradient(135deg, #11998e, #38ef7d);
-    color: white;
-}
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-.btn-success:active {
-    transform: scale(0.98);
-    box-shadow: 0 5px 15px rgba(17,153,142,0.4);
-}
+/* DASHBOARD */
+.dashboard-layout { display: flex; min-height: 100vh; min-height: 100dvh; }
 
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-/* ============================================================
-   ЛИЧНЫЙ КАБИНЕТ
-   ============================================================ */
-.dashboard-layout {
-    display: flex;
-    min-height: 100vh;
-    min-height: 100dvh;
-}
-
-/* ---- SIDEBAR (мобильное выдвижное меню) ---- */
 .sidebar-overlay {
     display: none;
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.5);
     z-index: 998;
-    animation: fadeIn 0.2s;
 }
-
 .sidebar-overlay.active { display: block; }
 
 .sidebar {
@@ -293,11 +248,7 @@ button, .nav-item, .auth-tab {
 }
 
 .nav-item:active { background: #f0f2f5; }
-.nav-item.active {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-}
-
+.nav-item.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
 .nav-icon { font-size: 20px; }
 
 .logout-btn-sidebar {
@@ -310,26 +261,16 @@ button, .nav-item, .auth-tab {
     cursor: pointer;
     font-weight: 600;
     font-size: 14px;
-    transition: all 0.2s;
     min-height: 50px;
 }
 
-.logout-btn-sidebar:active {
-    background: #dc3545;
-    color: white;
-    border-color: #dc3545;
-}
-
-/* ---- MAIN CONTENT ---- */
 .main-content {
     flex: 1;
     overflow-y: auto;
     padding: 30px 40px;
-    padding-bottom: 40px;
     min-width: 0;
 }
 
-/* ---- TOPBAR ---- */
 .topbar {
     display: flex;
     justify-content: space-between;
@@ -338,12 +279,7 @@ button, .nav-item, .auth-tab {
     gap: 12px;
 }
 
-.topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-}
+.topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
 
 .burger-btn {
     display: none;
@@ -375,7 +311,6 @@ button, .nav-item, .auth-tab {
     padding: 6px 16px 6px 6px;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    flex-shrink: 0;
 }
 
 .user-avatar {
@@ -395,23 +330,15 @@ button, .nav-item, .auth-tab {
 .user-avatar.large { width: 80px; height: 80px; font-size: 32px; }
 
 .user-info-top { display: flex; flex-direction: column; min-width: 0; }
-.user-info-top span {
-    font-weight: 600;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+.user-info-top span { font-weight: 600; font-size: 14px; }
 .user-info-top small { color: #999; font-size: 12px; }
 
-/* ---- SECTIONS ---- */
 .section { display: none; }
 .section.active { display: block; animation: fadeIn 0.3s; }
-
 .section-title { font-size: 18px; margin: 25px 0 15px; color: #333; }
 
-/* ---- BALANCE CARD ---- */
-.balance-card {
+/* КОШЕЛЬКИ */
+.total-balance-card {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     padding: 25px 28px;
@@ -420,11 +347,11 @@ button, .nav-item, .auth-tab {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 10px 30px rgba(102,126,234,0.3);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
-.balance-label { font-size: 14px; opacity: 0.9; margin-bottom: 8px; }
-.balance-value {
+.total-balance-label { font-size: 14px; opacity: 0.9; margin-bottom: 8px; }
+.total-balance-value {
     font-size: 36px;
     font-weight: 700;
     display: flex;
@@ -432,10 +359,85 @@ button, .nav-item, .auth-tab {
     gap: 8px;
     flex-wrap: wrap;
 }
-.balance-currency { font-size: 18px; opacity: 0.8; font-weight: 500; }
-.balance-icon { font-size: 50px; opacity: 0.4; }
+.total-balance-currency { font-size: 18px; opacity: 0.8; font-weight: 500; }
+.total-balance-icon { font-size: 50px; opacity: 0.4; }
+.total-balance-hint { font-size: 12px; opacity: 0.8; margin-top: 6px; }
 
-/* ---- STATS ---- */
+.wallets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.wallet-card {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    border: 2px solid transparent;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.wallet-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--wallet-color, #667eea);
+}
+
+.wallet-card:active {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.wallet-currency { display: flex; align-items: center; gap: 10px; }
+.wallet-flag { font-size: 28px; line-height: 1; }
+.wallet-code { font-size: 16px; font-weight: 700; color: #333; }
+.wallet-name { font-size: 11px; color: #999; font-weight: 500; }
+
+.wallet-balance {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+    word-break: break-all;
+}
+
+.wallet-balance-zero { color: #999; }
+
+.wallet-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+.wallet-action {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #f0f2f5;
+    color: #666;
+    transition: all 0.2s;
+    min-height: 36px;
+}
+
+.wallet-action.primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+.wallet-action.success { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+
+/* СТАТИСТИКА */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -464,7 +466,6 @@ button, .nav-item, .auth-tab {
     font-weight: 700;
     flex-shrink: 0;
 }
-
 .stat-icon.income { background: #d4edda; color: #28a745; }
 .stat-icon.outcome { background: #f8d7da; color: #dc3545; }
 .stat-icon.count { background: #d1ecf1; color: #17a2b8; }
@@ -472,7 +473,7 @@ button, .nav-item, .auth-tab {
 .stat-label { color: #999; font-size: 12px; margin-bottom: 4px; }
 .stat-value { font-size: 18px; font-weight: 700; color: #333; }
 
-/* ---- CARD ---- */
+/* CARD */
 .card {
     background: white;
     padding: 25px;
@@ -482,7 +483,7 @@ button, .nav-item, .auth-tab {
 
 .card h2 { margin-bottom: 20px; color: #333; font-size: 20px; }
 
-/* ---- CONVERTER ---- */
+/* КОНВЕРТЕР */
 .convert-row {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -500,7 +501,6 @@ button, .nav-item, .auth-tab {
     cursor: pointer;
     font-size: 22px;
     margin-bottom: 4px;
-    transition: transform 0.3s;
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(102,126,234,0.3);
 }
@@ -515,12 +515,7 @@ button, .nav-item, .auth-tab {
     margin-top: 20px;
 }
 
-.result-box p:first-child {
-    color: #999;
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
+.result-box p:first-child { color: #999; font-size: 14px; margin-bottom: 8px; }
 .result-amount {
     font-size: 32px;
     font-weight: 700;
@@ -528,10 +523,33 @@ button, .nav-item, .auth-tab {
     margin-bottom: 8px;
     word-break: break-all;
 }
-
 .rate-info { color: #666; font-size: 13px; }
 
-/* ---- TRANSACTIONS ---- */
+.convert-note {
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 13px;
+    color: #856404;
+}
+
+.currency-display {
+    background: #f0f2f5;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.currency-display .label { color: #999; font-size: 13px; font-weight: 500; }
+.currency-display .value { color: #333; }
+
+/* ТРАНЗАКЦИИ */
 .transactions-list {
     background: white;
     border-radius: 15px;
@@ -545,20 +563,11 @@ button, .nav-item, .auth-tab {
     align-items: center;
     padding: 14px 18px;
     border-bottom: 1px solid #f0f2f5;
-    transition: background 0.2s;
     gap: 12px;
 }
-
-.transaction:active { background: #fafbfc; }
 .transaction:last-child { border-bottom: none; }
 
-.transaction-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-    flex: 1;
-}
+.transaction-info { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
 
 .transaction-icon {
     width: 42px;
@@ -571,15 +580,11 @@ button, .nav-item, .auth-tab {
     font-weight: 700;
     flex-shrink: 0;
 }
-
 .transaction-icon.income { background: #d4edda; color: #28a745; }
 .transaction-icon.outcome { background: #f8d7da; color: #dc3545; }
+.transaction-icon.convert { background: #d1ecf1; color: #17a2b8; }
 
-.transaction-details {
-    min-width: 0;
-    flex: 1;
-}
-
+.transaction-details { min-width: 0; flex: 1; }
 .transaction-details h4 {
     font-size: 14px;
     color: #333;
@@ -589,7 +594,6 @@ button, .nav-item, .auth-tab {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .transaction-details p { font-size: 12px; color: #999; }
 
 .transaction-amount {
@@ -597,18 +601,15 @@ button, .nav-item, .auth-tab {
     font-size: 15px;
     white-space: nowrap;
     flex-shrink: 0;
+    text-align: right;
 }
-
 .transaction-amount.income { color: #28a745; }
 .transaction-amount.outcome { color: #dc3545; }
+.transaction-amount.convert { color: #17a2b8; }
 
-.empty-state {
-    text-align: center;
-    padding: 50px 20px;
-    color: #999;
-}
+.empty-state { text-align: center; padding: 50px 20px; color: #999; }
 
-/* ---- PROFILE ---- */
+/* ПРОФИЛЬ */
 .profile-header {
     display: flex;
     align-items: center;
@@ -618,11 +619,57 @@ button, .nav-item, .auth-tab {
     border-bottom: 1px solid #f0f2f5;
     flex-wrap: wrap;
 }
-
 .profile-header h3 { font-size: 19px; margin-bottom: 4px; }
 .profile-header p { color: #999; font-size: 14px; }
 
-/* ---- NOTIFICATIONS (мобильные — сверху по центру) ---- */
+/* МОДАЛЬНОЕ ОКНО */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal {
+    background: white;
+    padding: 30px 25px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s;
+    position: relative;
+}
+
+.modal h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #f0f2f5;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+}
+
+/* УВЕДОМЛЕНИЯ */
 .notification {
     position: fixed;
     top: calc(16px + env(safe-area-inset-top));
@@ -639,19 +686,15 @@ button, .nav-item, .auth-tab {
     max-width: calc(100vw - 32px);
     text-align: center;
 }
-
 @keyframes slideDown {
     from { transform: translate(-50%, -120%); opacity: 0; }
     to { transform: translate(-50%, 0); opacity: 1; }
 }
-
 .notification.success { background: #28a745; }
 .notification.error { background: #dc3545; }
 .notification.info { background: #17a2b8; }
 
-/* ============================================================
-   НИЖНЯЯ НАВИГАЦИЯ (только на мобильных)
-   ============================================================ */
+/* НИЖНЯЯ НАВИГАЦИЯ */
 .bottom-nav {
     display: none;
     position: fixed;
@@ -665,7 +708,6 @@ button, .nav-item, .auth-tab {
     z-index: 100;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     justify-content: space-around;
-    align-items: center;
 }
 
 .bottom-nav-item {
@@ -673,7 +715,6 @@ button, .nav-item, .auth-tab {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 3px;
     padding: 8px 4px;
     border: none;
@@ -682,27 +723,15 @@ button, .nav-item, .auth-tab {
     color: #999;
     font-size: 11px;
     font-weight: 500;
-    transition: all 0.2s;
     min-height: 56px;
     border-radius: 10px;
-    user-select: none;
 }
-
 .bottom-nav-item .nav-icon { font-size: 22px; }
+.bottom-nav-item.active { color: #667eea; }
+.bottom-nav-item:active { background: #f0f2f5; }
 
-.bottom-nav-item.active {
-    color: #667eea;
-}
-
-.bottom-nav-item:active {
-    background: #f0f2f5;
-}
-
-/* ============================================================
-   📱 МОБИЛЬНЫЕ СТИЛИ
-   ============================================================ */
+/* АДАПТИВ */
 @media (max-width: 768px) {
-    /* Сайдбар — выдвижной */
     .sidebar {
         position: fixed;
         top: 0;
@@ -714,167 +743,54 @@ button, .nav-item, .auth-tab {
         box-shadow: 4px 0 20px rgba(0,0,0,0.15);
         padding-top: calc(20px + env(safe-area-inset-top));
     }
-
-    .sidebar.open {
-        transform: translateX(0);
-    }
-
-    .sidebar-close {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Скрываем нижнюю часть сайдбара (пункты уходят в bottom-nav) */
-    .sidebar-nav {
-        padding-top: 12px;
-    }
-
-    /* Бургер показываем */
-    .burger-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Основной контент — на всю ширину */
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-close { display: flex; align-items: center; justify-content: center; }
+    .burger-btn { display: flex; align-items: center; justify-content: center; }
     .main-content {
         padding: 16px;
         padding-top: calc(16px + env(safe-area-inset-top));
-        padding-bottom: calc(90px + env(safe-area-inset-bottom)); /* место под нижнюю навигацию */
+        padding-bottom: calc(90px + env(safe-area-inset-bottom));
         width: 100%;
     }
+    .bottom-nav { display: flex; }
+    .topbar h1 { font-size: 20px; }
+    .user-info-top { display: none; }
+    .topbar-user { padding: 4px; }
 
-    /* Нижняя навигация показываем */
-    .bottom-nav {
-        display: flex;
-    }
+    .total-balance-card { padding: 22px; }
+    .total-balance-value { font-size: 30px; }
+    .total-balance-icon { font-size: 40px; }
 
-    /* Topbar компактнее */
-    .topbar {
-        margin-bottom: 18px;
-    }
+    .wallets-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .wallet-card { padding: 14px; border-radius: 14px; }
+    .wallet-flag { font-size: 22px; }
+    .wallet-code { font-size: 14px; }
+    .wallet-name { font-size: 10px; }
+    .wallet-balance { font-size: 18px; }
+    .wallet-actions { flex-direction: column; gap: 5px; }
+    .wallet-action { font-size: 11px; padding: 6px; }
 
-    .topbar h1 {
-        font-size: 20px;
-    }
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-card { padding: 14px; gap: 10px; flex-direction: column; text-align: center; }
+    .stat-icon { width: 42px; height: 42px; font-size: 18px; }
+    .stat-value { font-size: 16px; }
 
-    .user-info-top {
-        display: none; /* Скрываем имя/email в топбаре на телефоне */
-    }
+    .convert-row { grid-template-columns: 1fr; gap: 10px; }
+    .swap-btn { margin: 0 auto; transform: rotate(90deg); }
+    .swap-btn:active { transform: rotate(270deg) scale(0.95); }
+    .result-amount { font-size: 26px; }
 
-    .topbar-user {
-        padding: 4px;
-    }
+    .card { padding: 20px; border-radius: 18px; }
+    .card h2 { font-size: 18px; margin-bottom: 16px; }
 
-    /* Баланс-карточка */
-    .balance-card {
-        padding: 22px 22px;
-        border-radius: 18px;
-    }
+    .transaction { padding: 12px 14px; }
+    .transaction-icon { width: 38px; height: 38px; font-size: 16px; }
+    .transaction-details h4 { font-size: 13px; }
+    .transaction-amount { font-size: 14px; }
 
-    .balance-value {
-        font-size: 30px;
-    }
+    .auth-card { padding: 30px 22px; border-radius: 18px; }
+    .auth-logo h1 { font-size: 28px; }
 
-    .balance-icon {
-        font-size: 40px;
-    }
-
-    /* Статистика — 1 колонка или 2 */
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-
-    .stat-card {
-        padding: 14px;
-        gap: 10px;
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .stat-icon {
-        width: 42px;
-        height: 42px;
-        font-size: 18px;
-    }
-
-    .stat-value {
-        font-size: 16px;
-    }
-
-    /* Конвертер — в столбик */
-    .convert-row {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-
-    .swap-btn {
-        margin: 0 auto;
-        transform: rotate(90deg);
-    }
-
-    .swap-btn:active {
-        transform: rotate(270deg) scale(0.95);
-    }
-
-    .result-amount {
-        font-size: 28px;
-    }
-
-    /* Карточки */
-    .card {
-        padding: 20px;
-        border-radius: 18px;
-    }
-
-    .card h2 {
-        font-size: 18px;
-        margin-bottom: 16px;
-    }
-
-    /* Транзакции */
-    .transaction {
-        padding: 12px 14px;
-    }
-
-    .transaction-icon {
-        width: 38px;
-        height: 38px;
-        font-size: 16px;
-    }
-
-    .transaction-details h4 {
-        font-size: 13px;
-    }
-
-    .transaction-amount {
-        font-size: 14px;
-    }
-
-    /* Профиль */
-    .user-avatar.large {
-        width: 64px;
-        height: 64px;
-        font-size: 26px;
-    }
-
-    .profile-header h3 {
-        font-size: 17px;
-    }
-
-    /* Авторизация */
-    .auth-card {
-        padding: 30px 22px;
-        border-radius: 18px;
-    }
-
-    .auth-logo h1 {
-        font-size: 28px;
-    }
-
-    /* Уведомления по центру сверху */
     .notification {
         left: 16px;
         right: 16px;
@@ -882,58 +798,18 @@ button, .nav-item, .auth-tab {
         transform: none;
         animation: slideDownMobile 0.3s;
     }
-
     @keyframes slideDownMobile {
         from { transform: translateY(-120%); opacity: 0; }
         to { transform: translateY(0); opacity: 1; }
     }
 }
 
-/* Очень маленькие экраны */
-@media (max-width: 360px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    .bottom-nav-item {
-        font-size: 10px;
-    }
-    .bottom-nav-item .nav-icon {
-        font-size: 20px;
-    }
-    .balance-value {
-        font-size: 26px;
-    }
+@media (max-width: 380px) {
+    .wallets-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .wallet-balance { font-size: 20px; }
 }
 
-/* Планшеты */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .main-content {
-        padding: 25px;
-    }
-    .sidebar {
-        width: 220px;
-    }
-}
-
-/* Ландшафт на телефоне */
-@media (max-height: 500px) and (orientation: landscape) {
-    .auth-wrapper {
-        padding: 10px;
-    }
-    .auth-card {
-        padding: 20px;
-        max-height: 95vh;
-        overflow-y: auto;
-    }
-    .balance-card {
-        padding: 18px;
-    }
-    .balance-value {
-        font-size: 24px;
-    }
-}
-
-/* Отключаем анимации для пользователей с prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -945,13 +821,13 @@ button, .nav-item, .auth-tab {
 <body>
 
 <!-- ============================================================
-     ЭКРАН 1: АВТОРИЗАЦИЯ
+     ЭКРАН АВТОРИЗАЦИИ
      ============================================================ -->
 <div class="auth-wrapper" id="authScreen">
     <div class="auth-card">
         <div class="auth-logo">
             <h1>💱 PliyPay</h1>
-            <p>Платформа для переводов и обмена валют</p>
+            <p>Мультивалютный кошелёк и переводы</p>
         </div>
 
         <div class="auth-tabs">
@@ -959,7 +835,6 @@ button, .nav-item, .auth-tab {
             <button class="auth-tab" data-tab="register">Регистрация</button>
         </div>
 
-        <!-- Форма входа -->
         <form id="loginForm" class="auth-form active">
             <div class="form-group">
                 <label>Email</label>
@@ -970,10 +845,9 @@ button, .nav-item, .auth-tab {
                 <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
             </div>
             <button type="submit" class="btn btn-primary">Войти</button>
-            <p class="demo-hint">Демо: <b>user@example.com</b> / <b>password123</b></p>
+            <p class="demo-hint">🎁 При регистрации — $1000 и €500 бонус</p>
         </form>
 
-        <!-- Форма регистрации -->
         <form id="registerForm" class="auth-form">
             <div class="form-group">
                 <label>Имя</label>
@@ -988,39 +862,33 @@ button, .nav-item, .auth-tab {
                 <input type="password" id="regPassword" placeholder="Минимум 6 символов" required minlength="6" autocomplete="new-password">
             </div>
             <button type="submit" class="btn btn-primary">Создать аккаунт</button>
-            <p class="demo-hint">🎁 При регистрации — $1000 бонус</p>
+            <p class="demo-hint">🎁 При регистрации — $1000 и €500 бонус</p>
         </form>
     </div>
 </div>
 
 <!-- ============================================================
-     ЭКРАН 2: ЛИЧНЫЙ КАБИНЕТ
+     ЛИЧНЫЙ КАБИНЕТ
      ============================================================ -->
-
-<!-- Затемнение при открытом сайдбаре -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <div class="dashboard-layout hidden" id="dashboardScreen">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <h2>💱 PliyPay</h2>
-            <button class="sidebar-close" id="sidebarClose" aria-label="Закрыть меню">✕</button>
+            <button class="sidebar-close" id="sidebarClose" aria-label="Закрыть">✕</button>
         </div>
 
         <nav class="sidebar-nav">
-            <button class="nav-item active" data-section="overview">
-                <span class="nav-icon">📊</span><span>Обзор</span>
+            <button class="nav-item active" data-section="wallets">
+                <span class="nav-icon">💼</span><span>Кошельки</span>
             </button>
             <button class="nav-item" data-section="converter">
                 <span class="nav-icon">🔄</span><span>Конвертер</span>
             </button>
             <button class="nav-item" data-section="transfer">
                 <span class="nav-icon">💸</span><span>Переводы</span>
-            </button>
-            <button class="nav-item" data-section="deposit">
-                <span class="nav-icon">➕</span><span>Пополнение</span>
             </button>
             <button class="nav-item" data-section="history">
                 <span class="nav-icon">📜</span><span>История</span>
@@ -1035,12 +903,11 @@ button, .nav-item, .auth-tab {
         </button>
     </aside>
 
-    <!-- MAIN -->
     <main class="main-content">
         <header class="topbar">
             <div class="topbar-left">
                 <button class="burger-btn" id="burgerBtn" aria-label="Меню">☰</button>
-                <h1 id="pageTitle">Обзор</h1>
+                <h1 id="pageTitle">Кошельки</h1>
             </div>
             <div class="topbar-user">
                 <div class="user-avatar" id="userAvatar">И</div>
@@ -1051,42 +918,22 @@ button, .nav-item, .auth-tab {
             </div>
         </header>
 
-        <!-- ОБЗОР -->
-        <section class="section active" id="overviewSection">
-            <div class="balance-card">
+        <!-- КОШЕЛЬКИ -->
+        <section class="section active" id="walletsSection">
+            <div class="total-balance-card">
                 <div>
-                    <p class="balance-label">Текущий баланс</p>
-                    <div class="balance-value">
-                        <span id="balanceValue">0.00</span>
-                        <span class="balance-currency">USD</span>
+                    <p class="total-balance-label">Общий баланс (в USD)</p>
+                    <div class="total-balance-value">
+                        <span id="totalBalanceUSD">0.00</span>
+                        <span class="total-balance-currency">USD</span>
                     </div>
+                    <p class="total-balance-hint">Все валюты конвертированы в USD</p>
                 </div>
-                <div class="balance-icon">💰</div>
+                <div class="total-balance-icon">💰</div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon income">↓</div>
-                    <div>
-                        <p class="stat-label">Доходы</p>
-                        <p class="stat-value" id="statIncome">$0.00</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon outcome">↑</div>
-                    <div>
-                        <p class="stat-label">Расходы</p>
-                        <p class="stat-value" id="statOutcome">$0.00</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon count">📋</div>
-                    <div>
-                        <p class="stat-label">Транзакций</p>
-                        <p class="stat-value" id="statCount">0</p>
-                    </div>
-                </div>
-            </div>
+            <h2 class="section-title">Мои кошельки</h2>
+            <div class="wallets-grid" id="walletsGrid"></div>
 
             <h2 class="section-title">Последние операции</h2>
             <div id="recentTransactions" class="transactions-list"></div>
@@ -1095,15 +942,18 @@ button, .nav-item, .auth-tab {
         <!-- КОНВЕРТЕР -->
         <section class="section" id="converterSection">
             <div class="card">
-                <h2>Конвертер валют</h2>
+                <h2>🔄 Конвертер валют</h2>
+                <p style="color: #999; font-size: 13px; margin-bottom: 20px;">
+                    Конвертация между вашими кошельками
+                </p>
                 <div class="convert-row">
                     <div class="form-group">
-                        <label>Из валюты</label>
+                        <label>Из кошелька</label>
                         <select id="fromCurrency"></select>
                     </div>
-                    <button class="swap-btn" id="swapBtn" aria-label="Поменять местами">⇄</button>
+                    <button class="swap-btn" id="swapBtn" aria-label="Поменять">⇄</button>
                     <div class="form-group">
-                        <label>В валюту</label>
+                        <label>В кошелёк</label>
                         <select id="toCurrency"></select>
                     </div>
                 </div>
@@ -1111,26 +961,49 @@ button, .nav-item, .auth-tab {
                     <label>Сумма</label>
                     <input type="number" id="convertAmount" value="100" min="0" step="0.01" inputmode="decimal">
                 </div>
+
+                <div class="currency-display">
+                    <span class="label">Доступно в кошельке:</span>
+                    <span class="value" id="fromBalance">$0.00</span>
+                </div>
+
                 <div class="result-box">
-                    <p>Результат</p>
+                    <p>Вы получите</p>
                     <div class="result-amount" id="convertResult">0.00</div>
                     <p class="rate-info" id="convertRate">Курс: —</p>
                 </div>
+
+                <div class="convert-note" id="convertNote">
+                    ⚠️ Конвертация выполняется между вашими кошельками
+                </div>
+
+                <button class="btn btn-primary" id="convertBtn" style="margin-top: 15px;">
+                    🔄 Конвертировать
+                </button>
             </div>
         </section>
 
         <!-- ПЕРЕВОДЫ -->
         <section class="section" id="transferSection">
             <div class="card">
-                <h2>Перевод средств</h2>
+                <h2>💸 Перевод средств</h2>
+                <p style="color: #999; font-size: 13px; margin-bottom: 20px;">
+                    Перевод другому пользователю PliyPay
+                </p>
                 <form id="transferForm">
                     <div class="form-group">
-                        <label>Валюта перевода</label>
+                        <label>Из кошелька</label>
                         <select id="transferCurrency"></select>
                     </div>
+
+                    <div class="currency-display">
+                        <span class="label">Доступно:</span>
+                        <span class="value" id="transferBalance">$0.00</span>
+                    </div>
+
                     <div class="form-group">
-                        <label>Номер счёта получателя</label>
-                        <input type="text" id="recipientAccount" placeholder="1234567890123456" required minlength="8" inputmode="numeric" autocomplete="off">
+                        <label>Email получателя</label>
+                        <input type="email" id="recipientEmail" placeholder="friend@example.com" required autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label>Сумма</label>
@@ -1138,27 +1011,9 @@ button, .nav-item, .auth-tab {
                     </div>
                     <div class="form-group">
                         <label>Комментарий (необязательно)</label>
-                        <input type="text" id="transferComment" placeholder="Оплата услуг" autocomplete="off">
+                        <input type="text" id="transferComment" placeholder="За обед" autocomplete="off">
                     </div>
-                    <button type="submit" class="btn btn-success">💸 Отправить перевод</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- ПОПОЛНЕНИЕ -->
-        <section class="section" id="depositSection">
-            <div class="card">
-                <h2>Пополнение счёта</h2>
-                <form id="depositForm">
-                    <div class="form-group">
-                        <label>Валюта</label>
-                        <select id="depositCurrency"></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Сумма</label>
-                        <input type="number" id="depositAmount" placeholder="100.00" min="0.01" step="0.01" required inputmode="decimal">
-                    </div>
-                    <button type="submit" class="btn btn-primary">➕ Пополнить</button>
+                    <button type="submit" class="btn btn-success">💸 Отправить</button>
                 </form>
             </div>
         </section>
@@ -1166,7 +1021,21 @@ button, .nav-item, .auth-tab {
         <!-- ИСТОРИЯ -->
         <section class="section" id="historySection">
             <div class="card">
-                <h2>История транзакций</h2>
+                <h2>📜 История транзакций</h2>
+
+                <div class="form-group">
+                    <label>Фильтр по валюте</label>
+                    <select id="historyFilter">
+                        <option value="all">Все валюты</option>
+                        <option value="USD">🇺🇸 USD</option>
+                        <option value="EUR">🇪🇺 EUR</option>
+                        <option value="GBP">🇬🇧 GBP</option>
+                        <option value="RUB">🇷🇺 RUB</option>
+                        <option value="JPY">🇯🇵 JPY</option>
+                        <option value="CNY">🇨🇳 CNY</option>
+                    </select>
+                </div>
+
                 <div id="fullTransactions" class="transactions-list"></div>
             </div>
         </section>
@@ -1174,7 +1043,7 @@ button, .nav-item, .auth-tab {
         <!-- ПРОФИЛЬ -->
         <section class="section" id="profileSection">
             <div class="card">
-                <h2>Профиль пользователя</h2>
+                <h2>👤 Профиль пользователя</h2>
                 <div class="profile-header">
                     <div class="user-avatar large" id="profileAvatar">И</div>
                     <div>
@@ -1197,11 +1066,10 @@ button, .nav-item, .auth-tab {
         </section>
     </main>
 
-    <!-- НИЖНЯЯ НАВИГАЦИЯ (видна только на мобильных) -->
     <nav class="bottom-nav">
-        <button class="bottom-nav-item active" data-section="overview">
-            <span class="nav-icon">📊</span>
-            <span>Обзор</span>
+        <button class="bottom-nav-item active" data-section="wallets">
+            <span class="nav-icon">💼</span>
+            <span>Кошельки</span>
         </button>
         <button class="bottom-nav-item" data-section="converter">
             <span class="nav-icon">🔄</span>
@@ -1222,24 +1090,57 @@ button, .nav-item, .auth-tab {
     </nav>
 </div>
 
+<!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ -->
+<div class="modal-overlay hidden" id="walletModal">
+    <div class="modal">
+        <button class="modal-close" id="modalClose">✕</button>
+        <h2>💰 Пополнение</h2>
+
+        <div class="currency-display">
+            <span class="label">Валюта:</span>
+            <span class="value" id="modalCurrency">USD</span>
+        </div>
+
+        <div class="currency-display">
+            <span class="label">Баланс:</span>
+            <span class="value" id="modalBalance">$0.00</span>
+        </div>
+
+        <div class="form-group">
+            <label>Сумма пополнения</label>
+            <input type="number" id="modalAmount" placeholder="100.00" min="0.01" step="0.01" inputmode="decimal">
+        </div>
+
+        <button class="btn btn-primary" id="modalSubmit">➕ Пополнить</button>
+    </div>
+</div>
+
 <script>
 /* ============================================================
-   BACKEND-ЭМУЛЯЦИЯ (localStorage вместо сервера)
+   КОНФИГУРАЦИЯ
    ============================================================ */
+const STORAGE_KEY = 'pliyPayDB_v3';
+const SESSION_KEY = 'pliyPaySession_v3';
 
-const STORAGE_KEY = 'pliyPayDB';
-const SESSION_KEY = 'pliyPaySession';
-
-const RATES = {
-    USD: 1, EUR: 0.925, GBP: 0.79,
-    RUB: 92.5, JPY: 149.5, CNY: 7.24
-};
-
+const RATES = { USD: 1, EUR: 0.925, GBP: 0.79, RUB: 92.5, JPY: 149.5, CNY: 7.24 };
 const SYMBOLS = { USD: '$', EUR: '€', GBP: '£', RUB: '₽', JPY: '¥', CNY: '¥' };
+const FLAGS = { USD: '🇺🇸', EUR: '🇪🇺', GBP: '🇬🇧', RUB: '🇷🇺', JPY: '🇯🇵', CNY: '🇨🇳' };
+const NAMES = {
+    USD: 'Доллар США', EUR: 'Евро', GBP: 'Фунт стерлингов',
+    RUB: 'Российский рубль', JPY: 'Японская йена', CNY: 'Китайский юань'
+};
+const WALLET_COLORS = {
+    USD: '#28a745', EUR: '#667eea', GBP: '#e91e63',
+    RUB: '#dc3545', JPY: '#ff9800', CNY: '#f44336'
+};
+const CURRENCIES = Object.keys(RATES);
 
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
 function hashPassword(password) {
     let hash = 0;
-    const salt = 'pliy_pay_salt_v1';
+    const salt = 'pliy_pay_salt_v3';
     const str = salt + password + salt;
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
@@ -1249,6 +1150,24 @@ function hashPassword(password) {
     return 'h_' + Math.abs(hash).toString(36);
 }
 
+function formatMoney(amount, currency) {
+    const num = parseFloat(amount) || 0;
+    const formatted = num.toLocaleString('ru-RU', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    return SYMBOLS[currency] + formatted;
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+/* ============================================================
+   БАЗА ДАННЫХ
+   ============================================================ */
 const DB = {
     load() {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -1275,27 +1194,27 @@ const DB = {
     }
 };
 
+/* ============================================================
+   API
+   ============================================================ */
 const Api = {
     register({ name, email, password }) {
         if (!name || !email || !password) throw new Error('Все поля обязательны');
         if (password.length < 6) throw new Error('Пароль минимум 6 символов');
         if (DB.findUser(email)) throw new Error('Пользователь уже существует');
 
+        const now = new Date().toISOString();
         const newUser = {
             id: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
             email: email.toLowerCase(),
             name: name.trim(),
             password: hashPassword(password),
-            balance: 1000.00,
-            transactions: [{
-                id: 't_' + Date.now(),
-                type: 'income',
-                amount: 1000,
-                currency: 'USD',
-                description: 'Приветственный бонус PliyPay',
-                date: new Date().toISOString()
-            }],
-            createdAt: new Date().toISOString()
+            wallets: { USD: 1000, EUR: 500, GBP: 0, RUB: 0, JPY: 0, CNY: 0 },
+            transactions: [
+                { id: 't_' + Date.now() + '_1', type: 'income', amount: 1000, currency: 'USD', description: 'Приветственный бонус PliyPay', date: now },
+                { id: 't_' + Date.now() + '_2', type: 'income', amount: 500, currency: 'EUR', description: 'Приветственный бонус PliyPay', date: now }
+            ],
+            createdAt: now
         };
 
         DB.create(newUser);
@@ -1313,7 +1232,12 @@ const Api = {
     getProfile(userId) {
         const user = DB.findById(userId);
         if (!user) throw new Error('Пользователь не найден');
-        return { ...this._publicUser(user), transactions: user.transactions, createdAt: user.createdAt };
+        return {
+            ...this._publicUser(user),
+            wallets: { ...user.wallets },
+            transactions: [...user.transactions],
+            createdAt: user.createdAt
+        };
     },
 
     updateProfile(userId, updates) {
@@ -1322,53 +1246,42 @@ const Api = {
         return this._publicUser(updated);
     },
 
-    convert({ from, to, amount }) {
+    convert(userId, { from, to, amount }) {
         const num = parseFloat(amount);
         if (!num || num <= 0) throw new Error('Некорректная сумма');
         if (!RATES[from] || !RATES[to]) throw new Error('Неподдерживаемая валюта');
+        if (from === to) throw new Error('Выберите разные валюты');
+
+        const user = DB.findById(userId);
+        if (!user) throw new Error('Пользователь не найден');
+        if ((user.wallets[from] || 0) < num) throw new Error(`Недостаточно средств в кошельке ${from}`);
+
         const amountInUSD = num / RATES[from];
         const result = amountInUSD * RATES[to];
-        const rate = RATES[to] / RATES[from];
+        const now = new Date().toISOString();
+
+        const newWallets = { ...user.wallets };
+        newWallets[from] = (newWallets[from] || 0) - num;
+        newWallets[to] = (newWallets[to] || 0) + result;
+
+        const txId = 't_' + Date.now();
+        const transactions = [
+            { id: txId + '_out', type: 'convert', amount: num, currency: from, description: `Конвертация ${from} → ${to}`, date: now },
+            { id: txId + '_in', type: 'convert', amount: result, currency: to, description: `Получено из ${from}`, date: now },
+            ...user.transactions
+        ];
+
+        DB.update(userId, { wallets: newWallets, transactions });
+
         return {
-            from, to, amount: num,
-            result: parseFloat(result.toFixed(4)),
-            rate: parseFloat(rate.toFixed(6))
-        };
-    },
-
-    payment(userId, { recipientAccount, amount, currency, comment }) {
-        if (!recipientAccount || recipientAccount.trim().length < 8)
-            throw new Error('Некорректный номер счёта');
-
-        const num = parseFloat(amount);
-        if (!num || num <= 0) throw new Error('Некорректная сумма');
-        if (!RATES[currency]) throw new Error('Неподдерживаемая валюта');
-
-        const user = DB.findById(userId);
-        if (!user) throw new Error('Пользователь не найден');
-
-        const amountInUSD = num / RATES[currency];
-        if (amountInUSD > user.balance) throw new Error('Недостаточно средств');
-
-        const transaction = {
-            id: 't_' + Date.now(),
-            type: 'outcome',
+            success: true, from, to,
             amount: num,
-            currency,
-            description: `Перевод на ${recipientAccount.slice(0,4)}****${recipientAccount.slice(-4)}${comment ? ' — ' + comment : ''}`,
-            date: new Date().toISOString()
+            result: parseFloat(result.toFixed(4)),
+            rate: parseFloat((RATES[to] / RATES[from]).toFixed(6))
         };
-
-        const newBalance = user.balance - amountInUSD;
-        DB.update(userId, {
-            balance: newBalance,
-            transactions: [transaction, ...user.transactions]
-        });
-
-        return { success: true, balance: newBalance, transaction };
     },
 
-    deposit(userId, { amount, currency }) {
+    deposit(userId, { currency, amount }) {
         const num = parseFloat(amount);
         if (!num || num <= 0) throw new Error('Некорректная сумма');
         if (!RATES[currency]) throw new Error('Неподдерживаемая валюта');
@@ -1376,30 +1289,81 @@ const Api = {
         const user = DB.findById(userId);
         if (!user) throw new Error('Пользователь не найден');
 
-        const amountInUSD = num / RATES[currency];
+        const newWallets = { ...user.wallets };
+        newWallets[currency] = (newWallets[currency] || 0) + num;
+
         const transaction = {
             id: 't_' + Date.now(),
             type: 'income',
             amount: num,
             currency,
-            description: 'Пополнение счёта',
+            description: `Пополнение кошелька ${currency}`,
             date: new Date().toISOString()
         };
 
-        const newBalance = user.balance + amountInUSD;
         DB.update(userId, {
-            balance: newBalance,
+            wallets: newWallets,
             transactions: [transaction, ...user.transactions]
         });
 
-        return { success: true, balance: newBalance, transaction };
+        return { success: true, wallets: newWallets, transaction };
+    },
+
+    payment(userId, { recipientEmail, currency, amount, comment }) {
+        const num = parseFloat(amount);
+        if (!num || num <= 0) throw new Error('Некорректная сумма');
+        if (!RATES[currency]) throw new Error('Неподдерживаемая валюта');
+        if (!recipientEmail || !recipientEmail.includes('@')) throw new Error('Некорректный email получателя');
+
+        const sender = DB.findById(userId);
+        if (!sender) throw new Error('Пользователь не найден');
+        if ((sender.wallets[currency] || 0) < num) throw new Error(`Недостаточно ${currency} в кошельке`);
+
+        const recipient = DB.findUser(recipientEmail);
+        if (!recipient) throw new Error('Получатель не найден в PliyPay');
+        if (recipient.id === sender.id) throw new Error('Нельзя переводить самому себе');
+
+        const now = new Date().toISOString();
+        const txId = 't_' + Date.now();
+
+        const senderWallets = { ...sender.wallets };
+        senderWallets[currency] -= num;
+
+        const recipientWallets = { ...recipient.wallets };
+        recipientWallets[currency] = (recipientWallets[currency] || 0) + num;
+
+        const senderTx = {
+            id: txId + '_out',
+            type: 'outcome',
+            amount: num,
+            currency,
+            description: `Перевод для ${recipient.name}${comment ? ' — ' + comment : ''}`,
+            date: now
+        };
+
+        const recipientTx = {
+            id: txId + '_in',
+            type: 'income',
+            amount: num,
+            currency,
+            description: `Перевод от ${sender.name}${comment ? ' — ' + comment : ''}`,
+            date: now
+        };
+
+        DB.update(sender.id, { wallets: senderWallets, transactions: [senderTx, ...sender.transactions] });
+        DB.update(recipient.id, { wallets: recipientWallets, transactions: [recipientTx, ...recipient.transactions] });
+
+        return { success: true, wallets: senderWallets, transaction: senderTx };
     },
 
     _publicUser(u) {
-        return { id: u.id, email: u.email, name: u.name, balance: u.balance };
+        return { id: u.id, email: u.email, name: u.name, wallets: { ...u.wallets } };
     }
 };
 
+/* ============================================================
+   СЕССИЯ
+   ============================================================ */
 const Session = {
     set(userId) { localStorage.setItem(SESSION_KEY, userId); },
     get() { return localStorage.getItem(SESSION_KEY); },
@@ -1409,7 +1373,6 @@ const Session = {
 /* ============================================================
    FRONTEND: АВТОРИЗАЦИЯ
    ============================================================ */
-
 const authScreen = document.getElementById('authScreen');
 const dashboardScreen = document.getElementById('dashboardScreen');
 
@@ -1450,7 +1413,7 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
         const password = document.getElementById('regPassword').value;
         const data = Api.register({ name, email, password });
         Session.set(data.token);
-        showNotification('Аккаунт создан! 🎉 Бонус $1000', 'success');
+        showNotification('Аккаунт создан! 🎉 $1000 и €500', 'success');
         showDashboard();
     } catch (err) {
         showNotification(err.message, 'error');
@@ -1474,90 +1437,83 @@ function logout() {
 }
 
 /* ============================================================
-   FRONTEND: ЛИЧНЫЙ КАБИНЕТ
+   FRONTEND: DASHBOARD
    ============================================================ */
-
 let currentUser = null;
+let currentWalletForModal = null;
 
 function initDashboard() {
-    const opts = Object.keys(RATES).map(c =>
-        `<option value="${c}">${SYMBOLS[c]} ${c}</option>`
+    const opts = CURRENCIES.map(c =>
+        `<option value="${c}">${FLAGS[c]} ${c} — ${NAMES[c]}</option>`
     ).join('');
 
-    ['fromCurrency', 'toCurrency', 'transferCurrency', 'depositCurrency'].forEach(id => {
+    ['fromCurrency', 'toCurrency', 'transferCurrency'].forEach(id => {
         document.getElementById(id).innerHTML = opts;
     });
 
     document.getElementById('fromCurrency').value = 'USD';
     document.getElementById('toCurrency').value = 'EUR';
 
-    // Верхнее меню (сайдбар)
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', () => {
             switchSection(item.dataset.section);
-            closeSidebar(); // На мобильных закрываем меню после выбора
+            closeSidebar();
         });
     });
 
-    // Нижнее меню (bottom-nav)
     document.querySelectorAll('.bottom-nav-item').forEach(item => {
         item.addEventListener('click', () => switchSection(item.dataset.section));
     });
 
-    // Logout
     document.getElementById('logoutBtn').addEventListener('click', logout);
-
-    // Бургер-меню
     document.getElementById('burgerBtn').addEventListener('click', openSidebar);
     document.getElementById('sidebarClose').addEventListener('click', closeSidebar);
     document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
 
-    // Конвертер
     document.getElementById('swapBtn').addEventListener('click', swapCurrencies);
     ['fromCurrency', 'toCurrency', 'convertAmount'].forEach(id => {
         document.getElementById(id).addEventListener('input', doConvert);
         document.getElementById(id).addEventListener('change', doConvert);
     });
+    document.getElementById('convertBtn').addEventListener('click', handleConvert);
 
-    // Формы
     document.getElementById('transferForm').addEventListener('submit', handleTransfer);
-    document.getElementById('depositForm').addEventListener('submit', handleDeposit);
+    document.getElementById('transferCurrency').addEventListener('change', updateTransferBalance);
+
+    document.getElementById('historyFilter').addEventListener('change', renderTransactions);
     document.getElementById('profileForm').addEventListener('submit', handleProfileUpdate);
+
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('walletModal').addEventListener('click', (e) => {
+        if (e.target.id === 'walletModal') closeModal();
+    });
+    document.getElementById('modalSubmit').addEventListener('click', handleModalSubmit);
 
     refreshProfile();
     doConvert();
 }
 
 function switchSection(name) {
-    // Обновляем верхнее меню
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     const topItem = document.querySelector(`.nav-item[data-section="${name}"]`);
     if (topItem) topItem.classList.add('active');
 
-    // Обновляем нижнее меню
     document.querySelectorAll('.bottom-nav-item').forEach(i => i.classList.remove('active'));
     const bottomItem = document.querySelector(`.bottom-nav-item[data-section="${name}"]`);
     if (bottomItem) bottomItem.classList.add('active');
 
-    // Показываем секцию
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById(name + 'Section').classList.add('active');
 
     const titles = {
-        overview: 'Обзор',
-        converter: 'Конвертер',
-        transfer: 'Переводы',
-        deposit: 'Пополнение',
-        history: 'История',
-        profile: 'Профиль'
+        wallets: 'Кошельки', converter: 'Конвертер', transfer: 'Переводы',
+        history: 'История', profile: 'Профиль'
     };
     document.getElementById('pageTitle').textContent = titles[name] || '';
 
-    // Скроллим наверх
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ---- SIDEBAR MOBILE ---- */
 function openSidebar() {
     document.getElementById('sidebar').classList.add('open');
     document.getElementById('sidebarOverlay').classList.add('active');
@@ -1570,31 +1526,28 @@ function closeSidebar() {
     document.body.style.overflow = '';
 }
 
+/* ============================================================
+   ОТРИСОВКА
+   ============================================================ */
 function refreshProfile() {
     const userId = Session.get();
     if (!userId) return logout();
 
     currentUser = Api.getProfile(userId);
 
-    document.getElementById('balanceValue').textContent = currentUser.balance.toFixed(2);
+    let totalUSD = 0;
+    for (const [currency, balance] of Object.entries(currentUser.wallets)) {
+        totalUSD += (balance || 0) / RATES[currency];
+    }
+    document.getElementById('totalBalanceUSD').textContent =
+        totalUSD.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    const income = currentUser.transactions
-        .filter(t => t.type === 'income')
-        .reduce((s, t) => s + t.amount / RATES[t.currency], 0);
-
-    const outcome = currentUser.transactions
-        .filter(t => t.type === 'outcome')
-        .reduce((s, t) => s + t.amount / RATES[t.currency], 0);
-
-    document.getElementById('statIncome').textContent = '$' + income.toFixed(2);
-    document.getElementById('statOutcome').textContent = '$' + outcome.toFixed(2);
-    document.getElementById('statCount').textContent = currentUser.transactions.length;
+    renderWallets();
 
     const initial = currentUser.name.charAt(0).toUpperCase();
     document.getElementById('userAvatar').textContent = initial;
     document.getElementById('userNameTop').textContent = currentUser.name;
     document.getElementById('userEmailTop').textContent = currentUser.email;
-
     document.getElementById('profileAvatar').textContent = initial;
     document.getElementById('profileName').textContent = currentUser.name;
     document.getElementById('profileEmail').textContent = currentUser.email;
@@ -1602,56 +1555,119 @@ function refreshProfile() {
     document.getElementById('profileEmailInput').value = currentUser.email;
 
     renderTransactions();
+    updateTransferBalance();
+    doConvert();
+}
+
+function renderWallets() {
+    const grid = document.getElementById('walletsGrid');
+    const wallets = currentUser.wallets;
+
+    grid.innerHTML = CURRENCIES.map(currency => {
+        const balance = wallets[currency] || 0;
+        const balanceClass = balance === 0 ? 'wallet-balance-zero' : '';
+        const color = WALLET_COLORS[currency];
+
+        return `
+            <div class="wallet-card" style="--wallet-color: ${color};">
+                <div class="wallet-header">
+                    <div class="wallet-currency">
+                        <span class="wallet-flag">${FLAGS[currency]}</span>
+                        <div>
+                            <div class="wallet-code">${currency}</div>
+                            <div class="wallet-name">${NAMES[currency]}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wallet-balance ${balanceClass}">
+                    ${formatMoney(balance, currency)}
+                </div>
+                <div class="wallet-actions">
+                    <button class="wallet-action primary" onclick="openDepositModal('${currency}')">
+                        ➕ Пополнить
+                    </button>
+                    <button class="wallet-action success" onclick="quickTransfer('${currency}')">
+                        💸 Перевести
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 function renderTransactions() {
-    const list = currentUser.transactions;
+    const filter = document.getElementById('historyFilter').value;
+    let list = currentUser.transactions;
 
-    const renderItem = t => `
-        <div class="transaction">
-            <div class="transaction-info">
-                <div class="transaction-icon ${t.type}">
-                    ${t.type === 'income' ? '↓' : '↑'}
+    if (filter !== 'all') {
+        list = list.filter(t => t.currency === filter);
+    }
+
+    const renderItem = t => {
+        const iconClass = t.type === 'income' ? 'income' : t.type === 'outcome' ? 'outcome' : 'convert';
+        const icon = t.type === 'income' ? '↓' : t.type === 'outcome' ? '↑' : '⇄';
+        const sign = t.type === 'income' ? '+' : t.type === 'outcome' ? '-' : '';
+
+        return `
+            <div class="transaction">
+                <div class="transaction-info">
+                    <div class="transaction-icon ${iconClass}">${icon}</div>
+                    <div class="transaction-details">
+                        <h4>${escapeHtml(t.description)}</h4>
+                        <p>${FLAGS[t.currency]} ${t.currency} · ${new Date(t.date).toLocaleString('ru-RU')}</p>
+                    </div>
                 </div>
-                <div class="transaction-details">
-                    <h4>${escapeHtml(t.description)}</h4>
-                    <p>${new Date(t.date).toLocaleString('ru-RU')}</p>
+                <div class="transaction-amount ${iconClass}">
+                    ${sign}${formatMoney(t.amount, t.currency)}
                 </div>
             </div>
-            <div class="transaction-amount ${t.type}">
-                ${t.type === 'income' ? '+' : '-'}${SYMBOLS[t.currency]}${t.amount.toFixed(2)}
-            </div>
-        </div>
-    `;
+        `;
+    };
 
     const empty = '<div class="empty-state">Пока нет операций</div>';
 
     document.getElementById('recentTransactions').innerHTML =
-        list.length ? list.slice(0, 5).map(renderItem).join('') : empty;
+        currentUser.transactions.length
+            ? currentUser.transactions.slice(0, 5).map(renderItem).join('')
+            : empty;
 
     document.getElementById('fullTransactions').innerHTML =
         list.length ? list.map(renderItem).join('') : empty;
 }
 
+/* ============================================================
+   КОНВЕРТЕР
+   ============================================================ */
 function doConvert() {
     const from = document.getElementById('fromCurrency').value;
     const to = document.getElementById('toCurrency').value;
     const amount = parseFloat(document.getElementById('convertAmount').value) || 0;
 
-    if (!amount) {
+    const fromBalance = (currentUser?.wallets?.[from] || 0);
+    document.getElementById('fromBalance').textContent = formatMoney(fromBalance, from);
+
+    if (!amount || from === to) {
         document.getElementById('convertResult').textContent = '0.00';
-        document.getElementById('convertRate').textContent = 'Курс: —';
+        document.getElementById('convertRate').textContent = from === to ? 'Выберите разные валюты' : 'Курс: —';
+        document.getElementById('convertNote').textContent =
+            from === to ? '⚠️ Выберите разные валюты' : '⚠️ Конвертация между вашими кошельками';
         return;
     }
 
-    try {
-        const data = Api.convert({ from, to, amount });
-        document.getElementById('convertResult').textContent =
-            SYMBOLS[to] + ' ' + data.result.toFixed(2);
-        document.getElementById('convertRate').textContent =
-            `Курс: 1 ${from} = ${data.rate} ${to}`;
-    } catch (err) {
-        console.error(err);
+    const amountInUSD = amount / RATES[from];
+    const result = amountInUSD * RATES[to];
+    const rate = RATES[to] / RATES[from];
+
+    document.getElementById('convertResult').textContent = formatMoney(result, to);
+    document.getElementById('convertRate').textContent =
+        `Курс: 1 ${from} = ${rate.toFixed(4)} ${to}`;
+
+    if (amount > fromBalance) {
+        document.getElementById('convertNote').textContent =
+            `⚠️ Недостаточно средств. Доступно: ${formatMoney(fromBalance, from)}`;
+    } else {
+        document.getElementById('convertNote').textContent =
+            `✅ Из ${formatMoney(amount, from)} → ${formatMoney(result, to)}`;
     }
 }
 
@@ -1660,6 +1676,30 @@ function swapCurrencies() {
     const t = document.getElementById('toCurrency');
     [f.value, t.value] = [t.value, f.value];
     doConvert();
+}
+
+function handleConvert() {
+    try {
+        const userId = Session.get();
+        const from = document.getElementById('fromCurrency').value;
+        const to = document.getElementById('toCurrency').value;
+        const amount = document.getElementById('convertAmount').value;
+
+        const result = Api.convert(userId, { from, to, amount });
+        showNotification(`✅ ${formatMoney(result.amount, from)} → ${formatMoney(result.result, to)}`, 'success');
+        refreshProfile();
+    } catch (err) {
+        showNotification(err.message, 'error');
+    }
+}
+
+/* ============================================================
+   ПЕРЕВОДЫ
+   ============================================================ */
+function updateTransferBalance() {
+    const currency = document.getElementById('transferCurrency').value;
+    const balance = currentUser?.wallets?.[currency] || 0;
+    document.getElementById('transferBalance').textContent = formatMoney(balance, currency);
 }
 
 function handleTransfer(e) {
@@ -1672,13 +1712,13 @@ function handleTransfer(e) {
     try {
         const userId = Session.get();
         Api.payment(userId, {
-            recipientAccount: document.getElementById('recipientAccount').value.trim(),
-            amount: document.getElementById('transferAmount').value,
+            recipientEmail: document.getElementById('recipientEmail').value.trim(),
             currency: document.getElementById('transferCurrency').value,
+            amount: document.getElementById('transferAmount').value,
             comment: document.getElementById('transferComment').value.trim()
         });
 
-        showNotification('✅ Перевод выполнен!', 'success');
+        showNotification(`✅ Перевод выполнен!`, 'success');
         e.target.reset();
         refreshProfile();
     } catch (err) {
@@ -1689,30 +1729,55 @@ function handleTransfer(e) {
     }
 }
 
-function handleDeposit(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.disabled = true;
-    const orig = btn.textContent;
-    btn.textContent = 'Зачисление...';
+function quickTransfer(currency) {
+    switchSection('transfer');
+    document.getElementById('transferCurrency').value = currency;
+    updateTransferBalance();
+    setTimeout(() => document.getElementById('recipientEmail').focus(), 300);
+}
+
+/* ============================================================
+   МОДАЛЬНОЕ ОКНО
+   ============================================================ */
+function openDepositModal(currency) {
+    currentWalletForModal = currency;
+    const balance = currentUser?.wallets?.[currency] || 0;
+
+    document.getElementById('modalCurrency').textContent =
+        `${FLAGS[currency]} ${currency} — ${NAMES[currency]}`;
+    document.getElementById('modalBalance').textContent = formatMoney(balance, currency);
+    document.getElementById('modalAmount').value = '';
+    document.getElementById('walletModal').classList.remove('hidden');
+
+    setTimeout(() => document.getElementById('modalAmount').focus(), 100);
+}
+
+function closeModal() {
+    document.getElementById('walletModal').classList.add('hidden');
+    currentWalletForModal = null;
+}
+
+function handleModalSubmit() {
+    if (!currentWalletForModal) return;
 
     try {
         const userId = Session.get();
-        const currency = document.getElementById('depositCurrency').value;
-        const amount = document.getElementById('depositAmount').value;
-        Api.deposit(userId, { amount, currency });
+        const amount = document.getElementById('modalAmount').value;
+        const currency = currentWalletForModal;
 
-        showNotification(`✅ Счёт пополнен на ${SYMBOLS[currency]}${amount}`, 'success');
-        e.target.reset();
+        Api.deposit(userId, { currency, amount });
+
+        showNotification(`✅ Пополнено ${formatMoney(amount, currency)}`, 'success');
+        closeModal();
         refreshProfile();
     } catch (err) {
         showNotification(err.message, 'error');
-    } finally {
-        btn.disabled = false;
-        btn.textContent = orig;
     }
 }
 
+/* ============================================================
+   ПРОФИЛЬ
+   ============================================================ */
 function handleProfileUpdate(e) {
     e.preventDefault();
     try {
@@ -1726,14 +1791,10 @@ function handleProfileUpdate(e) {
     }
 }
 
-function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
-
+/* ============================================================
+   УВЕДОМЛЕНИЯ
+   ============================================================ */
 function showNotification(message, type = 'info') {
-    // Удаляем старые уведомления
     document.querySelectorAll('.notification').forEach(n => n.remove());
 
     const n = document.createElement('div');
@@ -1741,7 +1802,7 @@ function showNotification(message, type = 'info') {
     n.textContent = message;
     document.body.appendChild(n);
 
-    if (navigator.vibrate) navigator.vibrate(30); // Вибро-отклик
+    if (navigator.vibrate) navigator.vibrate(30);
 
     setTimeout(() => {
         n.style.transition = 'opacity 0.3s, transform 0.3s';
@@ -1752,10 +1813,8 @@ function showNotification(message, type = 'info') {
 }
 
 /* ============================================================
-   ДОП. МОБИЛЬНЫЕ ФИШКИ
+   СВАЙПЫ
    ============================================================ */
-
-// Свайп слева направо для открытия сайдбара
 let touchStartX = 0;
 let touchStartY = 0;
 
@@ -1769,35 +1828,98 @@ document.addEventListener('touchend', (e) => {
         const dx = e.changedTouches[0].clientX - touchStartX;
         const dy = e.changedTouches[0].clientY - touchStartY;
 
-        // Свайп слева направо (только если почти горизонтально)
-        if (touchStartX < 40 && dx > 60 && Math.abs(dy) < 50) {
-            openSidebar();
-        }
-        // Свайп справа налево (закрыть)
-        if (dx < -60 && Math.abs(dy) < 50) {
-            closeSidebar();
-        }
+        if (touchStartX < 40 && dx > 60 && Math.abs(dy) < 50) openSidebar();
+        if (dx < -60 && Math.abs(dy) < 50) closeSidebar();
     }
 }, { passive: true });
 
-// Кнопка "Назад" браузера — закрываем сайдбар
-window.addEventListener('popstate', () => {
-    closeSidebar();
-});
+/* ============================================================
+   PWA: динамический манифест + service worker (inline)
+   ============================================================ */
 
-// Предотвращаем "отскок" страницы на iOS
-document.addEventListener('touchmove', (e) => {
-    if (document.body.style.overflow === 'hidden') {
-        e.preventDefault();
-    }
-}, { passive: false });
+// Динамически создаём manifest.json через Blob
+(function generateManifest() {
+    const manifest = {
+        name: "PliyPay — Мультивалютный кошелёк",
+        short_name: "PliyPay",
+        description: "Переводы и обмен валют с раздельными кошельками",
+        start_url: "./",
+        display: "standalone",
+        orientation: "portrait",
+        background_color: "#667eea",
+        theme_color: "#667eea",
+        lang: "ru",
+        scope: "./",
+        icons: [
+            {
+                src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM2NjdlZWEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM3NjRiYTIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTUlIiBmb250LXNpemU9IjI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCI+8J+SsTwvdGV4dD48L3N2Zz4=",
+                sizes: "512x512",
+                type: "image/svg+xml",
+                purpose: "any maskable"
+            }
+        ],
+        categories: ["finance", "productivity"]
+    };
 
-// Обновляем при повороте экрана
-window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-        closeSidebar();
-    }, 300);
-});
+    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = url;
+    document.head.appendChild(link);
+})();
+
+// Регистрируем Service Worker из Blob
+(function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+
+    const swCode = `
+        const CACHE_NAME = 'pliyPay-v3';
+        const ASSETS = ['./'];
+
+        self.addEventListener('install', (e) => {
+            e.waitUntil(
+                caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+            );
+        });
+
+        self.addEventListener('activate', (e) => {
+            e.waitUntil(
+                caches.keys().then(keys =>
+                    Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+                ).then(() => self.clients.claim())
+            );
+        });
+
+        self.addEventListener('fetch', (e) => {
+            if (e.request.method !== 'GET') return;
+            if (!e.request.url.startsWith(self.location.origin)) return;
+
+            e.respondWith(
+                caches.match(e.request).then(cached => {
+                    const fetchPromise = fetch(e.request).then(res => {
+                        if (res && res.status === 200) {
+                            const clone = res.clone();
+                            caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+                        }
+                        return res;
+                    }).catch(() => cached);
+                    return cached || fetchPromise;
+                })
+            );
+        });
+    `;
+
+    const blob = new Blob([swCode], { type: 'application/javascript' });
+    const swUrl = URL.createObjectURL(blob);
+
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register(swUrl)
+            .then(reg => console.log('✅ PWA готово'))
+            .catch(err => console.log('⚠️ SW в Blob работает не везде:', err.message));
+    });
+})();
 </script>
 
 </body>
