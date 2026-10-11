@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PliyPay — Перевод валюты</title>
+<style>
+/* ============================================================
+   БАЗОВЫЕ СТИЛИ
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+body {
+    background: #f0f2f5;
+    color: #333;
+    min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+
+/* ============================================================
+   ЭКРАН АВТОРИЗАЦИИ
+   ============================================================ */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.auth-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 420px;
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-logo { text-align: center; margin-bottom: 25px; }
+.auth-logo h1 {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+.auth-logo p { color: #999; font-size: 14px; }
+
+.auth-tabs {
+    display: flex;
+    background: #f0f2f5;
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 25px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.auth-tab.active {
+    background: white;
+    color: #667eea;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.auth-form { display: none; }
+.auth-form.active { display: block; animation: fadeIn 0.3s; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.demo-hint {
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+/* ============================================================
+   ФОРМЫ И КНОПКИ
+   ============================================================ */
+.form-group { margin-bottom: 18px; }
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s;
+    outline: none;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+}
+
+.form-group input:disabled { background: #f5f5f5; color: #999; }
+
+.btn {
+    padding: 14px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    color: white;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(17,153,142,0.3);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ============================================================
+   ЛИЧНЫЙ КАБИНЕТ
+   ============================================================ */
+.dashboard-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: white;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.sidebar-logo {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.sidebar-logo h2 {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 22px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #666;
+    text-align: left;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.nav-item:hover { background: #f0f2f5; color: #333; }
+
+.nav-item.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.nav-icon { font-size: 18px; }
+
+.logout-btn-sidebar {
+    margin: 12px;
+    padding: 12px;
+    border: 2px solid #ffe0e0;
+    background: #fff5f5;
+    color: #dc3545;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.logout-btn-sidebar:hover {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px 40px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.topbar h1 { font-size: 28px; color: #333; }
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 8px 16px 8px 8px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.user-avatar.large { width: 80px; height: 80px; font-size: 32px; }
+
+.user-info-top { display: flex; flex-direction: column; }
+.user-info-top span { font-weight: 600; font-size: 14px; }
+.user-info-top small { color: #999; font-size: 12px; }
+
+/* SECTIONS */
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.3s; }
+
+.section-title { font-size: 18px; margin: 25px 0 15px; color: #333; }
+
+/* BALANCE CARD */
+.balance-card {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 30px 35px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(102,126,234,0.3);
+    margin-bottom: 25px;
+}
+
+.balance-label { font-size: 14px; opacity: 0.9; margin-bottom: 8px; }
+.balance-value {
+    font-size: 42px;
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+.balance-currency { font-size: 20px; opacity: 0.8; font-weight: 500; }
+.balance-icon { font-size: 60px; opacity: 0.4; }
+
+/* STATS */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.stat-icon.income { background: #d4edda; color: #28a745; }
+.stat-icon.outcome { background: #f8d7da; color: #dc3545; }
+.stat-icon.count { background: #d1ecf1; color: #17a2b8; }
+
+.stat-label { color: #999; font-size: 13px; margin-bottom: 4px; }
+.stat-value { font-size: 20px; font-weight: 700; color: #333; }
+
+/* CARD */
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.card h2 { margin-bottom: 25px; color: #333; font-size: 22px; }
+
+/* CONVERTER */
+.convert-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 15px;
+    align-items: end;
+}
+
+.swap-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    margin-bottom: 4px;
+    transition: transform 0.3s;
+}
+
+.swap-btn:hover { transform: rotate(180deg); }
+
+.result-box {
+    background: linear-gradient(135deg, #f5f7fa, #e8ecf5);
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.result-box p:first-child {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.result-amount {
+    font-size: 36px;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 8px;
+}
+
+.rate-info { color: #666; font-size: 13px; }
+
+/* TRANSACTIONS */
+.transactions-list {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.transaction {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f2f5;
+    transition: background 0.2s;
+}
+
+.transaction:hover { background: #fafbfc; }
+.transaction:last-child { border-bottom: none; }
+
+.transaction-info { display: flex; align-items: center; gap: 15px; }
+
+.transaction-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.transaction-icon.income { background: #d4edda; color: #28a745; }
+.transaction-icon.outcome { background: #f8d7da; color: #dc3545; }
+
+.transaction-details h4 {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.transaction-details p { font-size: 12px; color: #999; }
+
+.transaction-amount {
+    font-weight: 700;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.transaction-amount.income { color: #28a745; }
+.transaction-amount.outcome { color: #dc3545; }
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+/* PROFILE */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.profile-header h3 { font-size: 20px; margin-bottom: 4px; }
+.profile-header p { color: #999; font-size: 14px; }
+
+/* NOTIFICATIONS */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    z-index: 3000;
+    animation: slideInRight 0.3s;
+    max-width: 350px;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.notification.success { background: #28a745; }
+.notification.error { background: #dc3545; }
+.notification.info { background: #17a2b8; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .sidebar { width: 70px; }
+    .sidebar-logo h2,
+    .nav-item span:not(.nav-icon) { display: none; }
+    .nav-item { justify-content: center; }
+    .main-content { padding: 20px; }
+    .balance-value { font-size: 32px; }
+}
+
+@media (max-width: 600px) {
+    .convert-row { grid-template-columns: 1fr; }
+    .swap-btn { margin: 0 auto; transform: rotate(90deg); }
+    .topbar-user .user-info-top { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     ЭКРАН 1: АВТОРИЗАЦИЯ
+     ============================================================ -->
+<div class="auth-wrapper" id="authScreen">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <h1>💱 PliyPay</h1>
+            <p>Платформа для переводов и обмена валют</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="login">Вход</button>
+            <button class="auth-tab" data-tab="register">Регистрация</button>
+        </div>
+
+        <!-- Форма входа -->
+        <form id="loginForm" class="auth-form active">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="user@example.com" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Войти</button>
+            <p class="demo-hint">Демо: <b>user@example.com</b> / <b>password123</b></p>
+        </form>
+
+        <!-- Форма регистрации -->
+        <form id="registerForm" class="auth-form">
+            <div class="form-group">
+                <label>Имя</label>
+                <input type="text" id="regName" placeholder="Иван Иванов" required minlength="2">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="regEmail" placeholder="user@example.com" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="regPassword" placeholder="Минимум 6 символов" required minlength="6">
+            </div>
+            <button type="submit" class="btn btn-primary">Создать аккаунт</button>
+            <p class="demo-hint">🎁 При регистрации — $1000 бонус</p>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================================
+     ЭКРАН 2: ЛИЧНЫЙ КАБИНЕТ
+     ============================================================ -->
+<div class="dashboard-layout hidden" id="dashboardScreen">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>💱 PliyPay</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-section="overview">
+                <span class="nav-icon">📊</span><span>Обзор</span>
+            </button>
+            <button class="nav-item" data-section="converter">
+                <span class="nav-icon">🔄</span><span>Конвертер</span>
+            </button>
+            <button class="nav-item" data-section="transfer">
+                <span class="nav-icon">💸</span><span>Переводы</span>
+            </button>
+            <button class="nav-item" data-section="deposit">
+                <span class="nav-icon">➕</span><span>Пополнение</span>
+            </button>
+            <button class="nav-item" data-section="history">
+                <span class="nav-icon">📜</span><span>История</span>
+            </button>
+            <button class="nav-item" data-section="profile">
+                <span class="nav-icon">👤</span><span>Профиль</span>
+            </button>
+        </nav>
+
+        <button class="logout-btn-sidebar" id="logoutBtn">
+            <span>🚪</span> Выйти
+        </button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+        <header class="topbar">
+            <h1 id="pageTitle">Обзор</h1>
+            <div class="topbar-user">
+                <div class="user-avatar" id="userAvatar">И</div>
+                <div class="user-info-top">
+                    <span id="userNameTop">Пользователь</span>
+                    <small id="userEmailTop">user@example.com</small>
+                </div>
+            </div>
+        </header>
+
+        <!-- ОБЗОР -->
+        <section class="section active" id="overviewSection">
+            <div class="balance-card">
+                <div>
+                    <p class="balance-label">Текущий баланс</p>
+                    <div class="balance-value">
+                        <span id="balanceValue">0.00</span>
+                        <span class="balance-currency">USD</span>
+                    </div>
+                </div>
+                <div class="balance-icon">💰</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon income">↓</div>
+                    <div>
+                        <p class="stat-label">Доходы</p>
+                        <p class="stat-value" id="statIncome">$0.00</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon outcome">↑</div>
+                    <div>
+                        <p class="stat-label">Расходы</p>
+                        <p class="stat-value" id="statOutcome">$0.00</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon count">📋</div>
+                    <div>
+                        <p class="stat-label">Транзакций</p>
+                        <p class="stat-value" id="statCount">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Последние операции</h2>
+            <div id="recentTransactions" class="transactions-list"></div>
+        </section>
+
+        <!-- КОНВЕРТЕР -->
+        <section class="section" id="converterSection">
+            <div class="card">
+                <h2>Конвертер валют</h2>
+                <div class="convert-row">
+                    <div class="form-group">
+                        <label>Из валюты</label>
+                        <select id="fromCurrency"></select>
+                    </div>
+                    <button class="swap-btn" id="swapBtn">⇄</button>
+                    <div class="form-group">
+                        <label>В валюту</label>
+                        <select id="toCurrency"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Сумма</label>
+                    <input type="number" id="convertAmount" value="100" min="0" step="0.01">
+                </div>
+                <div class="result-box">
+                    <p>Результат</p>
+                    <div class="result-amount" id="convertResult">0.00</div>
+                    <p class="rate-info" id="convertRate">Курс: —</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ПЕРЕВОДЫ -->
+        <section class="section" id="transferSection">
+            <div class="card">
+                <h2>Перевод средств</h2>
+                <form id="transferForm">
+                    <div class="form-group">
+                        <label>Валюта перевода</label>
+                        <select id="transferCurrency"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Номер счёта получателя</label>
+                        <input type="text" id="recipientAccount" placeholder="1234567890123456" required minlength="8">
+                    </div>
+                    <div class="form-group">
+                        <label>Сумма</label>
+                        <input type="number" id="transferAmount" placeholder="100.00" min="0.01" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Комментарий (необязательно)</label>
+                        <input type="text" id="transferComment" placeholder="Оплата услуг">
+                    </div>
+                    <button type="submit" class="btn btn-success">💸 Отправить перевод</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ПОПОЛНЕНИЕ -->
+        <section class="section" id="depositSection">
+            <div class="card">
+                <h2>Пополнение счёта</h2>
+                <form id="depositForm">
+                    <div class="form-group">
+                        <label>Валюта</label>
+                        <select id="depositCurrency"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Сумма</label>
+                        <input type="number" id="depositAmount" placeholder="100.00" min="0.01" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">➕ Пополнить</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ИСТОРИЯ -->
+        <section class="section" id="historySection">
+            <div class="card">
+                <h2>История транзакций</h2>
+                <div id="fullTransactions" class="transactions-list"></div>
+            </div>
+        </section>
+
+        <!-- ПРОФИЛЬ -->
+        <section class="section" id="profileSection">
+            <div class="card">
+                <h2>Профиль пользователя</h2>
+                <div class="profile-header">
+                    <div class="user-avatar large" id="profileAvatar">И</div>
+                    <div>
+                        <h3 id="profileName">Имя</h3>
+                        <p id="profileEmail">email</p>
+                    </div>
+                </div>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label>Имя</label>
+                        <input type="text" id="profileNameInput" required minlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Email (нельзя изменить)</label>
+                        <input type="email" id="profileEmailInput" disabled>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Сохранить</button>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+/* ============================================================
+   BACKEND-ЭМУЛЯЦИЯ (localStorage вместо сервера)
+   ============================================================ */
+
+const STORAGE_KEY = 'pliyPayDB';
+const SESSION_KEY = 'pliyPaySession';
+
+// Курсы валют (относительно USD)
+const RATES = {
+    USD: 1, EUR: 0.925, GBP: 0.79,
+    RUB: 92.5, JPY: 149.5, CNY: 7.24
+};
+
+const SYMBOLS = { USD: '$', EUR: '€', GBP: '£', RUB: '₽', JPY: '¥', CNY: '¥' };
+
+// ---------- ПРОСТОЕ "ХЕШИРОВАНИЕ" ПАРОЛЯ (для демо) ----------
+// ВНИМАНИЕ: в реальном проекте используйте bcrypt на сервере!
+function hashPassword(password) {
+    let hash = 0;
+    const salt = 'pliy_pay_salt_v1';
+    const str = salt + password + salt;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+    return 'h_' + Math.abs(hash).toString(36);
+}
+
+// ---------- "БАЗА ДАННЫХ" ----------
+const DB = {
+    load() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : { users: [] };
+    },
+    save(data) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    },
+    findUser(email) {
+        return this.load().users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    },
+    findById(id) {
+        return this.load().users.find(u => u.id === id);
+    },
+    create(user) {
+        const db = this.load();
+        db.users.push(user);
+        this.save(db);
+        return user;
+    },
+    update(id, updates) {
+        const db = this.load();
+        const idx = db.users.findIndex(u => u.id === id);
+        if (idx === -1) return null;
+        db.users[idx] = { ...db.users[idx], ...updates };
+        this.save(db);
+        return db.users[idx];
+    }
+};
+
+// ---------- "API" ----------
+const Api = {
+    register({ name, email, password }) {
+        if (!name || !email || !password) throw new Error('Все поля обязательны');
+        if (password.length < 6) throw new Error('Пароль минимум 6 символов');
+        if (DB.findUser(email)) throw new Error('Пользователь уже существует');
+
+        const newUser = {
+            id: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+            email: email.toLowerCase(),
+            name: name.trim(),
+            password: hashPassword(password),
+            balance: 1000.00,
+            transactions: [{
+                id: 't_' + Date.now(),
+                type: 'income',
+                amount: 1000,
+                currency: 'USD',
+                description: 'Приветственный бонус PliyPay',
+                date: new Date().toISOString()
+            }],
+            createdAt: new Date().toISOString()
+        };
+
+        DB.create(newUser);
+        return { token: newUser.id, user: this._publicUser(newUser) };
+    },
+
+    login({ email, password }) {
+        if (!email || !password) throw new Error('Введите email и пароль');
+        const user = DB.findUser(email);
+        if (!user) throw new Error('Неверный email или пароль');
+        if (user.password !== hashPassword(password)) throw new Error('Неверный email или пароль');
+        return { token: user.id, user: this._publicUser(user) };
+    },
+
+    getProfile(userId) {
+        const user = DB.findById(userId);
+        if (!user) throw new Error('Пользователь не найден');
+        return { ...this._publicUser(user), transactions: user.transactions, createdAt: user.createdAt };
+    },
+
+    updateProfile(userId, updates) {
+        if (!updates.name || updates.name.trim().length < 2) throw new Error('Имя минимум 2 символа');
+        const updated = DB.update(userId, { name: updates.name.trim() });
+        return this._publicUser(updated);
+    },
+
+    convert({ from, to, amount }) {
+        const num = parseFloat(amount);
+        if (!num || num <= 0) throw new Error('Некорректная сумма');
+        if (!RATES[from] || !RATES[to]) throw new Error('Неподдерживаемая валюта');
+        const amountInUSD = num / RATES[from];
+        const result = amountInUSD * RATES[to];
+        const rate = RATES[to] / RATES[from];
+        return {
+            from, to, amount: num,
+            result: parseFloat(result.toFixed(4)),
+            rate: parseFloat(rate.toFixed(6))
+        };
+    },
+
+    payment(userId, { recipientAccount, amount, currency, comment }) {
+        if (!recipientAccount || recipientAccount.trim().length < 8)
+            throw new Error('Некорректный номер счёта');
+
+        const num = parseFloat(amount);
+        if (!num || num <= 0) throw new Error('Некорректная сумма');
+        if (!RATES[currency]) throw new Error('Неподдерживаемая валюта');
+
+        const user = DB.findById(userId);
+        if (!user) throw new Error('Пользователь не найден');
+
+        const amountInUSD = num / RATES[currency];
+        if (amountInUSD > user.balance) throw new Error('Недостаточно средств');
+
+        const transaction = {
+            id: 't_' + Date.now(),
+            type: 'outcome',
+            amount: num,
+            currency,
+            description: `Перевод на ${recipientAccount.slice(0,4)}****${recipientAccount.slice(-4)}${comment ? ' — ' + comment : ''}`,
+            date: new Date().toISOString()
+        };
+
+        const newBalance = user.balance - amountInUSD;
+        DB.update(userId, {
+            balance: newBalance,
+            transactions: [transaction, ...user.transactions]
+        });
+
+        return { success: true, balance: newBalance, transaction };
+    },
+
+    deposit(userId, { amount, currency }) {
+        const num = parseFloat(amount);
+        if (!num || num <= 0) throw new Error('Некорректная сумма');
+        if (!RATES[currency]) throw new Error('Неподдерживаемая валюта');
+
+        const user = DB.findById(userId);
+        if (!user) throw new Error('Пользователь не найден');
+
+        const amountInUSD = num / RATES[currency];
+        const transaction = {
+            id: 't_' + Date.now(),
+            type: 'income',
+            amount: num,
+            currency,
+            description: 'Пополнение счёта',
+            date: new Date().toISOString()
+        };
+
+        const newBalance = user.balance + amountInUSD;
+        DB.update(userId, {
+            balance: newBalance,
+            transactions: [transaction, ...user.transactions]
+        });
+
+        return { success: true, balance: newBalance, transaction };
+    },
+
+    _publicUser(u) {
+        return { id: u.id, email: u.email, name: u.name, balance: u.balance };
+    }
+};
+
+// ---------- "СЕССИЯ" ----------
+const Session = {
+    set(userId) { localStorage.setItem(SESSION_KEY, userId); },
+    get() { return localStorage.getItem(SESSION_KEY); },
+    clear() { localStorage.removeItem(SESSION_KEY); }
+};
+
+/* ============================================================
+   FRONTEND: АВТОРИЗАЦИЯ
+   ============================================================ */
+
+const authScreen = document.getElementById('authScreen');
+const dashboardScreen = document.getElementById('dashboardScreen');
+
+// Стартовое состояние: если есть сессия — сразу в кабинет
+if (Session.get() && DB.findById(Session.get())) {
+    showDashboard();
+} else {
+    Session.clear();
+}
+
+// Переключение табов
+document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab + 'Form').classList.add('active');
+    });
+});
+
+// Вход
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    try {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const data = Api.login({ email, password });
+        Session.set(data.token);
+        showNotification('Добро пожаловать в PliyPay, ' + data.user.name + '!', 'success');
+        showDashboard();
+    } catch (err) {
+        showNotification(err.message, 'error');
+    }
+});
+
+// Регистрация
+document.getElementById('registerForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    try {
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const data = Api.register({ name, email, password });
+        Session.set(data.token);
+        showNotification('Аккаунт PliyPay создан! 🎉 Бонус $1000 зачислен', 'success');
+        showDashboard();
+    } catch (err) {
+        showNotification(err.message, 'error');
+    }
+});
+
+function showDashboard() {
+    authScreen.classList.add('hidden');
+    dashboardScreen.classList.remove('hidden');
+    initDashboard();
+}
+
+function logout() {
+    Session.clear();
+    dashboardScreen.classList.add('hidden');
+    authScreen.classList.remove('hidden');
+    // Очищаем формы
+    document.getElementById('loginForm').reset();
+    document.getElementById('registerForm').reset();
+    showNotification('Вы вышли из PliyPay', 'info');
+}
+
+/* ============================================================
+   FRONTEND: ЛИЧНЫЙ КАБИНЕТ
+   ============================================================ */
+
+let currentUser = null;
+
+function initDashboard() {
+    // Заполняем валюты
+    const opts = Object.keys(RATES).map(c =>
+        `<option value="${c}">${SYMBOLS[c]} ${c}</option>`
+    ).join('');
+
+    ['fromCurrency', 'toCurrency', 'transferCurrency', 'depositCurrency'].forEach(id => {
+        document.getElementById(id).innerHTML = opts;
+    });
+
+    document.getElementById('fromCurrency').value = 'USD';
+    document.getElementById('toCurrency').value = 'EUR';
+
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => switchSection(item.dataset.section));
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // Converter
+    document.getElementById('swapBtn').addEventListener('click', swapCurrencies);
+    ['fromCurrency', 'toCurrency', 'convertAmount'].forEach(id => {
+        document.getElementById(id).addEventListener('input', doConvert);
+    });
+
+    // Forms
+    document.getElementById('transferForm').addEventListener('submit', handleTransfer);
+    document.getElementById('depositForm').addEventListener('submit', handleDeposit);
+    document.getElementById('profileForm').addEventListener('submit', handleProfileUpdate);
+
+    // Загрузка данных
+    refreshProfile();
+    doConvert();
+}
+
+function switchSection(name) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector(`[data-section="${name}"]`).classList.add('active');
+
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(name + 'Section').classList.add('active');
+
+    const titles = {
+        overview: 'Обзор',
+        converter: 'Конвертер валют',
+        transfer: 'Переводы',
+        deposit: 'Пополнение',
+        history: 'История операций',
+        profile: 'Профиль'
+    };
+    document.getElementById('pageTitle').textContent = titles[name] || '';
+}
+
+function refreshProfile() {
+    const userId = Session.get();
+    if (!userId) return logout();
+
+    currentUser = Api.getProfile(userId);
+
+    // Баланс
+    document.getElementById('balanceValue').textContent = currentUser.balance.toFixed(2);
+
+    // Статистика
+    const income = currentUser.transactions
+        .filter(t => t.type === 'income')
+        .reduce((s, t) => s + t.amount / RATES[t.currency], 0);
+
+    const outcome = currentUser.transactions
+        .filter(t => t.type === 'outcome')
+        .reduce((s, t) => s + t.amount / RATES[t.currency], 0);
+
+    document.getElementById('statIncome').textContent = '$' + income.toFixed(2);
+    document.getElementById('statOutcome').textContent = '$' + outcome.toFixed(2);
+    document.getElementById('statCount').textContent = currentUser.transactions.length;
+
+    // Профиль
+    const initial = currentUser.name.charAt(0).toUpperCase();
+    document.getElementById('userAvatar').textContent = initial;
+    document.getElementById('userNameTop').textContent = currentUser.name;
+    document.getElementById('userEmailTop').textContent = currentUser.email;
+
+    document.getElementById('profileAvatar').textContent = initial;
+    document.getElementById('profileName').textContent = currentUser.name;
+    document.getElementById('profileEmail').textContent = currentUser.email;
+    document.getElementById('profileNameInput').value = currentUser.name;
+    document.getElementById('profileEmailInput').value = currentUser.email;
+
+    renderTransactions();
+}
+
+function renderTransactions() {
+    const list = currentUser.transactions;
+
+    const renderItem = t => `
+        <div class="transaction">
+            <div class="transaction-info">
+                <div class="transaction-icon ${t.type}">
+                    ${t.type === 'income' ? '↓' : '↑'}
+                </div>
+                <div class="transaction-details">
+                    <h4>${escapeHtml(t.description)}</h4>
+                    <p>${new Date(t.date).toLocaleString('ru-RU')}</p>
+                </div>
+            </div>
+            <div class="transaction-amount ${t.type}">
+                ${t.type === 'income' ? '+' : '-'}${SYMBOLS[t.currency]}${t.amount.toFixed(2)}
+            </div>
+        </div>
+    `;
+
+    const empty = '<div class="empty-state">Пока нет операций</div>';
+
+    document.getElementById('recentTransactions').innerHTML =
+        list.length ? list.slice(0, 5).map(renderItem).join('') : empty;
+
+    document.getElementById('fullTransactions').innerHTML =
+        list.length ? list.map(renderItem).join('') : empty;
+}
+
+/* ---------- КОНВЕРТЕР ---------- */
+function doConvert() {
+    const from = document.getElementById('fromCurrency').value;
+    const to = document.getElementById('toCurrency').value;
+    const amount = parseFloat(document.getElementById('convertAmount').value) || 0;
+
+    if (!amount) {
+        document.getElementById('convertResult').textContent = '0.00';
+        document.getElementById('convertRate').textContent = 'Курс: —';
+        return;
+    }
+
+    try {
+        const data = Api.convert({ from, to, amount });
+        document.getElementById('convertResult').textContent =
+            SYMBOLS[to] + ' ' + data.result.toFixed(2);
+        document.getElementById('convertRate').textContent =
+            `Курс: 1 ${from} = ${data.rate} ${to}`;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function swapCurrencies() {
+    const f = document.getElementById('fromCurrency');
+    const t = document.getElementById('toCurrency');
+    [f.value, t.value] = [t.value, f.value];
+    doConvert();
+}
+
+/* ---------- ПЕРЕВОД ---------- */
+function handleTransfer(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = 'Отправка...';
+
+    try {
+        const userId = Session.get();
+        Api.payment(userId, {
+            recipientAccount: document.getElementById('recipientAccount').value.trim(),
+            amount: document.getElementById('transferAmount').value,
+            currency: document.getElementById('transferCurrency').value,
+            comment: document.getElementById('transferComment').value.trim()
+        });
+
+        showNotification('✅ Перевод через PliyPay выполнен!', 'success');
+        e.target.reset();
+        refreshProfile();
+    } catch (err) {
+        showNotification(err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = orig;
+    }
+}
+
+/* ---------- ПОПОЛНЕНИЕ ---------- */
+function handleDeposit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = 'Зачисление...';
+
+    try {
+        const userId = Session.get();
+        const currency = document.getElementById('depositCurrency').value;
+        const amount = document.getElementById('depositAmount').value;
+        Api.deposit(userId, { amount, currency });
+
+        showNotification(`✅ Счёт PliyPay пополнен на ${SYMBOLS[currency]}${amount}`, 'success');
+        e.target.reset();
+        refreshProfile();
+    } catch (err) {
+        showNotification(err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = orig;
+    }
+}
+
+/* ---------- ПРОФИЛЬ ---------- */
+function handleProfileUpdate(e) {
+    e.preventDefault();
+    try {
+        const userId = Session.get();
+        const name = document.getElementById('profileNameInput').value;
+        Api.updateProfile(userId, { name });
+        showNotification('✅ Профиль PliyPay обновлён', 'success');
+        refreshProfile();
+    } catch (err) {
+        showNotification(err.message, 'error');
+    }
+}
+
+/* ---------- УТИЛИТЫ ---------- */
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function showNotification(message, type = 'info') {
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.textContent = message;
+    document.body.appendChild(n);
+    setTimeout(() => {
+        n.style.transition = 'opacity 0.3s, transform 0.3s';
+        n.style.opacity = '0';
+        n.style.transform = 'translateX(120%)';
+        setTimeout(() => n.remove(), 300);
+    }, 3000);
+}
+</script>
+
+</body>
+</html>
