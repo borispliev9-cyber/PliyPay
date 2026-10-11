@@ -2,37 +2,65 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#667eea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PliyPay">
+<meta name="mobile-web-app-capable" content="yes">
 <title>PliyPay — Перевод валюты</title>
 <style>
 /* ============================================================
-   БАЗОВЫЕ СТИЛИ
+   БАЗОВЫЕ СТИЛИ + МОБИЛЬНАЯ ОПТИМИЗАЦИЯ
    ============================================================ */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+html, body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+}
 
 body {
     background: #f0f2f5;
     color: #333;
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
 }
 
 .hidden { display: none !important; }
+
+/* Запрет выделения текста на кнопках */
+button, .nav-item, .auth-tab {
+    user-select: none;
+    -webkit-user-select: none;
+}
 
 /* ============================================================
    ЭКРАН АВТОРИЗАЦИИ
    ============================================================ */
 .auth-wrapper {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 20px;
+    padding-top: calc(20px + env(safe-area-inset-top));
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
 }
 
 .auth-card {
     background: white;
-    padding: 40px;
+    padding: 40px 30px;
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     width: 100%;
@@ -50,6 +78,7 @@ body {
     background: linear-gradient(135deg, #667eea, #764ba2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 32px;
     margin-bottom: 8px;
 }
@@ -65,7 +94,7 @@ body {
 
 .auth-tab {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -74,6 +103,7 @@ body {
     font-weight: 500;
     color: #666;
     transition: all 0.3s;
+    min-height: 44px;
 }
 
 .auth-tab.active {
@@ -110,13 +140,24 @@ body {
 .form-group input,
 .form-group select {
     width: 100%;
-    padding: 12px 16px;
+    padding: 14px 16px;
     border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 15px;
+    border-radius: 12px;
+    font-size: 16px; /* ВАЖНО: 16px предотвращает zoom на iOS */
     transition: all 0.3s;
     outline: none;
     background: white;
+    min-height: 50px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.form-group select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 40px;
 }
 
 .form-group input:focus,
@@ -128,14 +169,16 @@ body {
 .form-group input:disabled { background: #f5f5f5; color: #999; }
 
 .btn {
-    padding: 14px 30px;
+    padding: 16px 30px;
     border: none;
-    border-radius: 10px;
-    font-size: 15px;
+    border-radius: 12px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
     width: 100%;
+    min-height: 54px;
+    user-select: none;
 }
 
 .btn-primary {
@@ -143,9 +186,9 @@ body {
     color: white;
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+.btn-primary:active {
+    transform: scale(0.98);
+    box-shadow: 0 5px 15px rgba(102,126,234,0.4);
 }
 
 .btn-success {
@@ -153,9 +196,9 @@ body {
     color: white;
 }
 
-.btn-success:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(17,153,142,0.3);
+.btn-success:active {
+    transform: scale(0.98);
+    box-shadow: 0 5px 15px rgba(17,153,142,0.4);
 }
 
 .btn:disabled {
@@ -169,11 +212,22 @@ body {
    ============================================================ */
 .dashboard-layout {
     display: flex;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
-/* SIDEBAR */
+/* ---- SIDEBAR (мобильное выдвижное меню) ---- */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+    animation: fadeIn 0.2s;
+}
+
+.sidebar-overlay.active { display: block; }
+
 .sidebar {
     width: 260px;
     background: white;
@@ -181,18 +235,35 @@ body {
     display: flex;
     flex-direction: column;
     padding: 20px 0;
+    flex-shrink: 0;
 }
 
 .sidebar-logo {
     padding: 0 24px 24px;
     border-bottom: 1px solid #f0f2f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .sidebar-logo h2 {
     background: linear-gradient(135deg, #667eea, #764ba2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 22px;
+}
+
+.sidebar-close {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
 }
 
 .sidebar-nav {
@@ -201,76 +272,110 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    overflow-y: auto;
 }
 
 .nav-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
+    padding: 14px 16px;
     border: none;
     background: transparent;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 15px;
     color: #666;
     text-align: left;
     transition: all 0.2s;
     font-weight: 500;
+    min-height: 50px;
 }
 
-.nav-item:hover { background: #f0f2f5; color: #333; }
-
+.nav-item:active { background: #f0f2f5; }
 .nav-item.active {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
 }
 
-.nav-icon { font-size: 18px; }
+.nav-icon { font-size: 20px; }
 
 .logout-btn-sidebar {
     margin: 12px;
-    padding: 12px;
+    padding: 14px;
     border: 2px solid #ffe0e0;
     background: #fff5f5;
     color: #dc3545;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
     font-size: 14px;
     transition: all 0.2s;
+    min-height: 50px;
 }
 
-.logout-btn-sidebar:hover {
+.logout-btn-sidebar:active {
     background: #dc3545;
     color: white;
     border-color: #dc3545;
 }
 
-/* MAIN CONTENT */
+/* ---- MAIN CONTENT ---- */
 .main-content {
     flex: 1;
     overflow-y: auto;
     padding: 30px 40px;
+    padding-bottom: 40px;
+    min-width: 0;
 }
 
+/* ---- TOPBAR ---- */
 .topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
+    gap: 12px;
 }
 
-.topbar h1 { font-size: 28px; color: #333; }
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.burger-btn {
+    display: none;
+    background: white;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    color: #667eea;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    flex-shrink: 0;
+}
+
+.topbar h1 {
+    font-size: 24px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 .topbar-user {
     display: flex;
     align-items: center;
     gap: 12px;
     background: white;
-    padding: 8px 16px 8px 8px;
+    padding: 6px 16px 6px 6px;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    flex-shrink: 0;
 }
 
 .user-avatar {
@@ -284,95 +389,104 @@ body {
     justify-content: center;
     font-weight: 700;
     font-size: 16px;
+    flex-shrink: 0;
 }
 
 .user-avatar.large { width: 80px; height: 80px; font-size: 32px; }
 
-.user-info-top { display: flex; flex-direction: column; }
-.user-info-top span { font-weight: 600; font-size: 14px; }
+.user-info-top { display: flex; flex-direction: column; min-width: 0; }
+.user-info-top span {
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .user-info-top small { color: #999; font-size: 12px; }
 
-/* SECTIONS */
+/* ---- SECTIONS ---- */
 .section { display: none; }
 .section.active { display: block; animation: fadeIn 0.3s; }
 
 .section-title { font-size: 18px; margin: 25px 0 15px; color: #333; }
 
-/* BALANCE CARD */
+/* ---- BALANCE CARD ---- */
 .balance-card {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    padding: 30px 35px;
+    padding: 25px 28px;
     border-radius: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 10px 30px rgba(102,126,234,0.3);
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .balance-label { font-size: 14px; opacity: 0.9; margin-bottom: 8px; }
 .balance-value {
-    font-size: 42px;
+    font-size: 36px;
     font-weight: 700;
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
-.balance-currency { font-size: 20px; opacity: 0.8; font-weight: 500; }
-.balance-icon { font-size: 60px; opacity: 0.4; }
+.balance-currency { font-size: 18px; opacity: 0.8; font-weight: 500; }
+.balance-icon { font-size: 50px; opacity: 0.4; }
 
-/* STATS */
+/* ---- STATS ---- */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
     margin-bottom: 25px;
 }
 
 .stat-card {
     background: white;
-    padding: 20px;
+    padding: 18px;
     border-radius: 15px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .stat-icon {
-    width: 50px;
-    height: 50px;
+    width: 46px;
+    height: 46px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .stat-icon.income { background: #d4edda; color: #28a745; }
 .stat-icon.outcome { background: #f8d7da; color: #dc3545; }
 .stat-icon.count { background: #d1ecf1; color: #17a2b8; }
 
-.stat-label { color: #999; font-size: 13px; margin-bottom: 4px; }
-.stat-value { font-size: 20px; font-weight: 700; color: #333; }
+.stat-label { color: #999; font-size: 12px; margin-bottom: 4px; }
+.stat-value { font-size: 18px; font-weight: 700; color: #333; }
 
-/* CARD */
+/* ---- CARD ---- */
 .card {
     background: white;
-    padding: 30px;
+    padding: 25px;
     border-radius: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.card h2 { margin-bottom: 25px; color: #333; font-size: 22px; }
+.card h2 { margin-bottom: 20px; color: #333; font-size: 20px; }
 
-/* CONVERTER */
+/* ---- CONVERTER ---- */
 .convert-row {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    gap: 15px;
+    gap: 12px;
     align-items: end;
 }
 
@@ -380,16 +494,18 @@ body {
     background: #667eea;
     color: white;
     border: none;
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: 4px;
     transition: transform 0.3s;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(102,126,234,0.3);
 }
 
-.swap-btn:hover { transform: rotate(180deg); }
+.swap-btn:active { transform: rotate(180deg) scale(0.95); }
 
 .result-box {
     background: linear-gradient(135deg, #f5f7fa, #e8ecf5);
@@ -406,15 +522,16 @@ body {
 }
 
 .result-amount {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 700;
     color: #667eea;
     margin-bottom: 8px;
+    word-break: break-all;
 }
 
 .rate-info { color: #666; font-size: 13px; }
 
-/* TRANSACTIONS */
+/* ---- TRANSACTIONS ---- */
 .transactions-list {
     background: white;
     border-radius: 15px;
@@ -426,15 +543,22 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 20px;
+    padding: 14px 18px;
     border-bottom: 1px solid #f0f2f5;
     transition: background 0.2s;
+    gap: 12px;
 }
 
-.transaction:hover { background: #fafbfc; }
+.transaction:active { background: #fafbfc; }
 .transaction:last-child { border-bottom: none; }
 
-.transaction-info { display: flex; align-items: center; gap: 15px; }
+.transaction-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+}
 
 .transaction-icon {
     width: 42px;
@@ -443,26 +567,36 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .transaction-icon.income { background: #d4edda; color: #28a745; }
 .transaction-icon.outcome { background: #f8d7da; color: #dc3545; }
+
+.transaction-details {
+    min-width: 0;
+    flex: 1;
+}
 
 .transaction-details h4 {
     font-size: 14px;
     color: #333;
     margin-bottom: 4px;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .transaction-details p { font-size: 12px; color: #999; }
 
 .transaction-amount {
     font-weight: 700;
-    font-size: 16px;
+    font-size: 15px;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .transaction-amount.income { color: #28a745; }
@@ -470,61 +604,341 @@ body {
 
 .empty-state {
     text-align: center;
-    padding: 60px 20px;
+    padding: 50px 20px;
     color: #999;
 }
 
-/* PROFILE */
+/* ---- PROFILE ---- */
 .profile-header {
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding-bottom: 25px;
-    margin-bottom: 25px;
+    gap: 18px;
+    padding-bottom: 22px;
+    margin-bottom: 22px;
     border-bottom: 1px solid #f0f2f5;
+    flex-wrap: wrap;
 }
 
-.profile-header h3 { font-size: 20px; margin-bottom: 4px; }
+.profile-header h3 { font-size: 19px; margin-bottom: 4px; }
 .profile-header p { color: #999; font-size: 14px; }
 
-/* NOTIFICATIONS */
+/* ---- NOTIFICATIONS (мобильные — сверху по центру) ---- */
 .notification {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 25px;
+    top: calc(16px + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 22px;
     border-radius: 12px;
     color: white;
     font-weight: 500;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    font-size: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     z-index: 3000;
-    animation: slideInRight 0.3s;
-    max-width: 350px;
+    animation: slideDown 0.3s;
+    max-width: calc(100vw - 32px);
+    text-align: center;
 }
 
-@keyframes slideInRight {
-    from { transform: translateX(120%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+@keyframes slideDown {
+    from { transform: translate(-50%, -120%); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
 }
 
 .notification.success { background: #28a745; }
 .notification.error { background: #dc3545; }
 .notification.info { background: #17a2b8; }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .sidebar { width: 70px; }
-    .sidebar-logo h2,
-    .nav-item span:not(.nav-icon) { display: none; }
-    .nav-item { justify-content: center; }
-    .main-content { padding: 20px; }
-    .balance-value { font-size: 32px; }
+/* ============================================================
+   НИЖНЯЯ НАВИГАЦИЯ (только на мобильных)
+   ============================================================ */
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+    padding: 8px 4px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    justify-content: space-around;
+    align-items: center;
 }
 
-@media (max-width: 600px) {
-    .convert-row { grid-template-columns: 1fr; }
-    .swap-btn { margin: 0 auto; transform: rotate(90deg); }
-    .topbar-user .user-info-top { display: none; }
+.bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 4px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #999;
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.2s;
+    min-height: 56px;
+    border-radius: 10px;
+    user-select: none;
+}
+
+.bottom-nav-item .nav-icon { font-size: 22px; }
+
+.bottom-nav-item.active {
+    color: #667eea;
+}
+
+.bottom-nav-item:active {
+    background: #f0f2f5;
+}
+
+/* ============================================================
+   📱 МОБИЛЬНЫЕ СТИЛИ
+   ============================================================ */
+@media (max-width: 768px) {
+    /* Сайдбар — выдвижной */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 999;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+        padding-top: calc(20px + env(safe-area-inset-top));
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Скрываем нижнюю часть сайдбара (пункты уходят в bottom-nav) */
+    .sidebar-nav {
+        padding-top: 12px;
+    }
+
+    /* Бургер показываем */
+    .burger-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Основной контент — на всю ширину */
+    .main-content {
+        padding: 16px;
+        padding-top: calc(16px + env(safe-area-inset-top));
+        padding-bottom: calc(90px + env(safe-area-inset-bottom)); /* место под нижнюю навигацию */
+        width: 100%;
+    }
+
+    /* Нижняя навигация показываем */
+    .bottom-nav {
+        display: flex;
+    }
+
+    /* Topbar компактнее */
+    .topbar {
+        margin-bottom: 18px;
+    }
+
+    .topbar h1 {
+        font-size: 20px;
+    }
+
+    .user-info-top {
+        display: none; /* Скрываем имя/email в топбаре на телефоне */
+    }
+
+    .topbar-user {
+        padding: 4px;
+    }
+
+    /* Баланс-карточка */
+    .balance-card {
+        padding: 22px 22px;
+        border-radius: 18px;
+    }
+
+    .balance-value {
+        font-size: 30px;
+    }
+
+    .balance-icon {
+        font-size: 40px;
+    }
+
+    /* Статистика — 1 колонка или 2 */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 14px;
+        gap: 10px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stat-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    /* Конвертер — в столбик */
+    .convert-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .swap-btn {
+        margin: 0 auto;
+        transform: rotate(90deg);
+    }
+
+    .swap-btn:active {
+        transform: rotate(270deg) scale(0.95);
+    }
+
+    .result-amount {
+        font-size: 28px;
+    }
+
+    /* Карточки */
+    .card {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .card h2 {
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+
+    /* Транзакции */
+    .transaction {
+        padding: 12px 14px;
+    }
+
+    .transaction-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+
+    .transaction-details h4 {
+        font-size: 13px;
+    }
+
+    .transaction-amount {
+        font-size: 14px;
+    }
+
+    /* Профиль */
+    .user-avatar.large {
+        width: 64px;
+        height: 64px;
+        font-size: 26px;
+    }
+
+    .profile-header h3 {
+        font-size: 17px;
+    }
+
+    /* Авторизация */
+    .auth-card {
+        padding: 30px 22px;
+        border-radius: 18px;
+    }
+
+    .auth-logo h1 {
+        font-size: 28px;
+    }
+
+    /* Уведомления по центру сверху */
+    .notification {
+        left: 16px;
+        right: 16px;
+        max-width: none;
+        transform: none;
+        animation: slideDownMobile 0.3s;
+    }
+
+    @keyframes slideDownMobile {
+        from { transform: translateY(-120%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 360px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .bottom-nav-item {
+        font-size: 10px;
+    }
+    .bottom-nav-item .nav-icon {
+        font-size: 20px;
+    }
+    .balance-value {
+        font-size: 26px;
+    }
+}
+
+/* Планшеты */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .main-content {
+        padding: 25px;
+    }
+    .sidebar {
+        width: 220px;
+    }
+}
+
+/* Ландшафт на телефоне */
+@media (max-height: 500px) and (orientation: landscape) {
+    .auth-wrapper {
+        padding: 10px;
+    }
+    .auth-card {
+        padding: 20px;
+        max-height: 95vh;
+        overflow-y: auto;
+    }
+    .balance-card {
+        padding: 18px;
+    }
+    .balance-value {
+        font-size: 24px;
+    }
+}
+
+/* Отключаем анимации для пользователей с prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 </style>
 </head>
@@ -549,11 +963,11 @@ body {
         <form id="loginForm" class="auth-form active">
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" id="loginEmail" placeholder="user@example.com" required>
+                <input type="email" id="loginEmail" placeholder="user@example.com" required autocomplete="email">
             </div>
             <div class="form-group">
                 <label>Пароль</label>
-                <input type="password" id="loginPassword" placeholder="••••••••" required>
+                <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
             </div>
             <button type="submit" class="btn btn-primary">Войти</button>
             <p class="demo-hint">Демо: <b>user@example.com</b> / <b>password123</b></p>
@@ -563,15 +977,15 @@ body {
         <form id="registerForm" class="auth-form">
             <div class="form-group">
                 <label>Имя</label>
-                <input type="text" id="regName" placeholder="Иван Иванов" required minlength="2">
+                <input type="text" id="regName" placeholder="Иван Иванов" required minlength="2" autocomplete="name">
             </div>
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" id="regEmail" placeholder="user@example.com" required>
+                <input type="email" id="regEmail" placeholder="user@example.com" required autocomplete="email">
             </div>
             <div class="form-group">
                 <label>Пароль</label>
-                <input type="password" id="regPassword" placeholder="Минимум 6 символов" required minlength="6">
+                <input type="password" id="regPassword" placeholder="Минимум 6 символов" required minlength="6" autocomplete="new-password">
             </div>
             <button type="submit" class="btn btn-primary">Создать аккаунт</button>
             <p class="demo-hint">🎁 При регистрации — $1000 бонус</p>
@@ -582,12 +996,17 @@ body {
 <!-- ============================================================
      ЭКРАН 2: ЛИЧНЫЙ КАБИНЕТ
      ============================================================ -->
+
+<!-- Затемнение при открытом сайдбаре -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <div class="dashboard-layout hidden" id="dashboardScreen">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <h2>💱 PliyPay</h2>
+            <button class="sidebar-close" id="sidebarClose" aria-label="Закрыть меню">✕</button>
         </div>
 
         <nav class="sidebar-nav">
@@ -619,7 +1038,10 @@ body {
     <!-- MAIN -->
     <main class="main-content">
         <header class="topbar">
-            <h1 id="pageTitle">Обзор</h1>
+            <div class="topbar-left">
+                <button class="burger-btn" id="burgerBtn" aria-label="Меню">☰</button>
+                <h1 id="pageTitle">Обзор</h1>
+            </div>
             <div class="topbar-user">
                 <div class="user-avatar" id="userAvatar">И</div>
                 <div class="user-info-top">
@@ -679,7 +1101,7 @@ body {
                         <label>Из валюты</label>
                         <select id="fromCurrency"></select>
                     </div>
-                    <button class="swap-btn" id="swapBtn">⇄</button>
+                    <button class="swap-btn" id="swapBtn" aria-label="Поменять местами">⇄</button>
                     <div class="form-group">
                         <label>В валюту</label>
                         <select id="toCurrency"></select>
@@ -687,7 +1109,7 @@ body {
                 </div>
                 <div class="form-group">
                     <label>Сумма</label>
-                    <input type="number" id="convertAmount" value="100" min="0" step="0.01">
+                    <input type="number" id="convertAmount" value="100" min="0" step="0.01" inputmode="decimal">
                 </div>
                 <div class="result-box">
                     <p>Результат</p>
@@ -708,15 +1130,15 @@ body {
                     </div>
                     <div class="form-group">
                         <label>Номер счёта получателя</label>
-                        <input type="text" id="recipientAccount" placeholder="1234567890123456" required minlength="8">
+                        <input type="text" id="recipientAccount" placeholder="1234567890123456" required minlength="8" inputmode="numeric" autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label>Сумма</label>
-                        <input type="number" id="transferAmount" placeholder="100.00" min="0.01" step="0.01" required>
+                        <input type="number" id="transferAmount" placeholder="100.00" min="0.01" step="0.01" required inputmode="decimal">
                     </div>
                     <div class="form-group">
                         <label>Комментарий (необязательно)</label>
-                        <input type="text" id="transferComment" placeholder="Оплата услуг">
+                        <input type="text" id="transferComment" placeholder="Оплата услуг" autocomplete="off">
                     </div>
                     <button type="submit" class="btn btn-success">💸 Отправить перевод</button>
                 </form>
@@ -734,7 +1156,7 @@ body {
                     </div>
                     <div class="form-group">
                         <label>Сумма</label>
-                        <input type="number" id="depositAmount" placeholder="100.00" min="0.01" step="0.01" required>
+                        <input type="number" id="depositAmount" placeholder="100.00" min="0.01" step="0.01" required inputmode="decimal">
                     </div>
                     <button type="submit" class="btn btn-primary">➕ Пополнить</button>
                 </form>
@@ -763,7 +1185,7 @@ body {
                 <form id="profileForm">
                     <div class="form-group">
                         <label>Имя</label>
-                        <input type="text" id="profileNameInput" required minlength="2">
+                        <input type="text" id="profileNameInput" required minlength="2" autocomplete="name">
                     </div>
                     <div class="form-group">
                         <label>Email (нельзя изменить)</label>
@@ -774,6 +1196,30 @@ body {
             </div>
         </section>
     </main>
+
+    <!-- НИЖНЯЯ НАВИГАЦИЯ (видна только на мобильных) -->
+    <nav class="bottom-nav">
+        <button class="bottom-nav-item active" data-section="overview">
+            <span class="nav-icon">📊</span>
+            <span>Обзор</span>
+        </button>
+        <button class="bottom-nav-item" data-section="converter">
+            <span class="nav-icon">🔄</span>
+            <span>Обмен</span>
+        </button>
+        <button class="bottom-nav-item" data-section="transfer">
+            <span class="nav-icon">💸</span>
+            <span>Перевод</span>
+        </button>
+        <button class="bottom-nav-item" data-section="history">
+            <span class="nav-icon">📜</span>
+            <span>История</span>
+        </button>
+        <button class="bottom-nav-item" data-section="profile">
+            <span class="nav-icon">👤</span>
+            <span>Профиль</span>
+        </button>
+    </nav>
 </div>
 
 <script>
@@ -784,7 +1230,6 @@ body {
 const STORAGE_KEY = 'pliyPayDB';
 const SESSION_KEY = 'pliyPaySession';
 
-// Курсы валют (относительно USD)
 const RATES = {
     USD: 1, EUR: 0.925, GBP: 0.79,
     RUB: 92.5, JPY: 149.5, CNY: 7.24
@@ -792,8 +1237,6 @@ const RATES = {
 
 const SYMBOLS = { USD: '$', EUR: '€', GBP: '£', RUB: '₽', JPY: '¥', CNY: '¥' };
 
-// ---------- ПРОСТОЕ "ХЕШИРОВАНИЕ" ПАРОЛЯ (для демо) ----------
-// ВНИМАНИЕ: в реальном проекте используйте bcrypt на сервере!
 function hashPassword(password) {
     let hash = 0;
     const salt = 'pliy_pay_salt_v1';
@@ -806,21 +1249,16 @@ function hashPassword(password) {
     return 'h_' + Math.abs(hash).toString(36);
 }
 
-// ---------- "БАЗА ДАННЫХ" ----------
 const DB = {
     load() {
         const raw = localStorage.getItem(STORAGE_KEY);
         return raw ? JSON.parse(raw) : { users: [] };
     },
-    save(data) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    },
+    save(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); },
     findUser(email) {
         return this.load().users.find(u => u.email.toLowerCase() === email.toLowerCase());
     },
-    findById(id) {
-        return this.load().users.find(u => u.id === id);
-    },
+    findById(id) { return this.load().users.find(u => u.id === id); },
     create(user) {
         const db = this.load();
         db.users.push(user);
@@ -837,7 +1275,6 @@ const DB = {
     }
 };
 
-// ---------- "API" ----------
 const Api = {
     register({ name, email, password }) {
         if (!name || !email || !password) throw new Error('Все поля обязательны');
@@ -963,7 +1400,6 @@ const Api = {
     }
 };
 
-// ---------- "СЕССИЯ" ----------
 const Session = {
     set(userId) { localStorage.setItem(SESSION_KEY, userId); },
     get() { return localStorage.getItem(SESSION_KEY); },
@@ -977,14 +1413,12 @@ const Session = {
 const authScreen = document.getElementById('authScreen');
 const dashboardScreen = document.getElementById('dashboardScreen');
 
-// Стартовое состояние: если есть сессия — сразу в кабинет
 if (Session.get() && DB.findById(Session.get())) {
     showDashboard();
 } else {
     Session.clear();
 }
 
-// Переключение табов
 document.querySelectorAll('.auth-tab').forEach(tab => {
     tab.addEventListener('click', () => {
         document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -994,7 +1428,6 @@ document.querySelectorAll('.auth-tab').forEach(tab => {
     });
 });
 
-// Вход
 document.getElementById('loginForm').addEventListener('submit', (e) => {
     e.preventDefault();
     try {
@@ -1002,14 +1435,13 @@ document.getElementById('loginForm').addEventListener('submit', (e) => {
         const password = document.getElementById('loginPassword').value;
         const data = Api.login({ email, password });
         Session.set(data.token);
-        showNotification('Добро пожаловать в PliyPay, ' + data.user.name + '!', 'success');
+        showNotification('Добро пожаловать, ' + data.user.name + '!', 'success');
         showDashboard();
     } catch (err) {
         showNotification(err.message, 'error');
     }
 });
 
-// Регистрация
 document.getElementById('registerForm').addEventListener('submit', (e) => {
     e.preventDefault();
     try {
@@ -1018,7 +1450,7 @@ document.getElementById('registerForm').addEventListener('submit', (e) => {
         const password = document.getElementById('regPassword').value;
         const data = Api.register({ name, email, password });
         Session.set(data.token);
-        showNotification('Аккаунт PliyPay создан! 🎉 Бонус $1000 зачислен', 'success');
+        showNotification('Аккаунт создан! 🎉 Бонус $1000', 'success');
         showDashboard();
     } catch (err) {
         showNotification(err.message, 'error');
@@ -1035,10 +1467,10 @@ function logout() {
     Session.clear();
     dashboardScreen.classList.add('hidden');
     authScreen.classList.remove('hidden');
-    // Очищаем формы
     document.getElementById('loginForm').reset();
     document.getElementById('registerForm').reset();
-    showNotification('Вы вышли из PliyPay', 'info');
+    closeSidebar();
+    showNotification('Вы вышли из системы', 'info');
 }
 
 /* ============================================================
@@ -1048,7 +1480,6 @@ function logout() {
 let currentUser = null;
 
 function initDashboard() {
-    // Заполняем валюты
     const opts = Object.keys(RATES).map(c =>
         `<option value="${c}">${SYMBOLS[c]} ${c}</option>`
     ).join('');
@@ -1060,46 +1491,83 @@ function initDashboard() {
     document.getElementById('fromCurrency').value = 'USD';
     document.getElementById('toCurrency').value = 'EUR';
 
-    // Navigation
+    // Верхнее меню (сайдбар)
     document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            switchSection(item.dataset.section);
+            closeSidebar(); // На мобильных закрываем меню после выбора
+        });
+    });
+
+    // Нижнее меню (bottom-nav)
+    document.querySelectorAll('.bottom-nav-item').forEach(item => {
         item.addEventListener('click', () => switchSection(item.dataset.section));
     });
 
     // Logout
     document.getElementById('logoutBtn').addEventListener('click', logout);
 
-    // Converter
+    // Бургер-меню
+    document.getElementById('burgerBtn').addEventListener('click', openSidebar);
+    document.getElementById('sidebarClose').addEventListener('click', closeSidebar);
+    document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
+
+    // Конвертер
     document.getElementById('swapBtn').addEventListener('click', swapCurrencies);
     ['fromCurrency', 'toCurrency', 'convertAmount'].forEach(id => {
         document.getElementById(id).addEventListener('input', doConvert);
+        document.getElementById(id).addEventListener('change', doConvert);
     });
 
-    // Forms
+    // Формы
     document.getElementById('transferForm').addEventListener('submit', handleTransfer);
     document.getElementById('depositForm').addEventListener('submit', handleDeposit);
     document.getElementById('profileForm').addEventListener('submit', handleProfileUpdate);
 
-    // Загрузка данных
     refreshProfile();
     doConvert();
 }
 
 function switchSection(name) {
+    // Обновляем верхнее меню
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelector(`[data-section="${name}"]`).classList.add('active');
+    const topItem = document.querySelector(`.nav-item[data-section="${name}"]`);
+    if (topItem) topItem.classList.add('active');
 
+    // Обновляем нижнее меню
+    document.querySelectorAll('.bottom-nav-item').forEach(i => i.classList.remove('active'));
+    const bottomItem = document.querySelector(`.bottom-nav-item[data-section="${name}"]`);
+    if (bottomItem) bottomItem.classList.add('active');
+
+    // Показываем секцию
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById(name + 'Section').classList.add('active');
 
     const titles = {
         overview: 'Обзор',
-        converter: 'Конвертер валют',
+        converter: 'Конвертер',
         transfer: 'Переводы',
         deposit: 'Пополнение',
-        history: 'История операций',
+        history: 'История',
         profile: 'Профиль'
     };
     document.getElementById('pageTitle').textContent = titles[name] || '';
+
+    // Скроллим наверх
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ---- SIDEBAR MOBILE ---- */
+function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 function refreshProfile() {
@@ -1108,10 +1576,8 @@ function refreshProfile() {
 
     currentUser = Api.getProfile(userId);
 
-    // Баланс
     document.getElementById('balanceValue').textContent = currentUser.balance.toFixed(2);
 
-    // Статистика
     const income = currentUser.transactions
         .filter(t => t.type === 'income')
         .reduce((s, t) => s + t.amount / RATES[t.currency], 0);
@@ -1124,7 +1590,6 @@ function refreshProfile() {
     document.getElementById('statOutcome').textContent = '$' + outcome.toFixed(2);
     document.getElementById('statCount').textContent = currentUser.transactions.length;
 
-    // Профиль
     const initial = currentUser.name.charAt(0).toUpperCase();
     document.getElementById('userAvatar').textContent = initial;
     document.getElementById('userNameTop').textContent = currentUser.name;
@@ -1168,7 +1633,6 @@ function renderTransactions() {
         list.length ? list.map(renderItem).join('') : empty;
 }
 
-/* ---------- КОНВЕРТЕР ---------- */
 function doConvert() {
     const from = document.getElementById('fromCurrency').value;
     const to = document.getElementById('toCurrency').value;
@@ -1198,7 +1662,6 @@ function swapCurrencies() {
     doConvert();
 }
 
-/* ---------- ПЕРЕВОД ---------- */
 function handleTransfer(e) {
     e.preventDefault();
     const btn = e.target.querySelector('button');
@@ -1215,7 +1678,7 @@ function handleTransfer(e) {
             comment: document.getElementById('transferComment').value.trim()
         });
 
-        showNotification('✅ Перевод через PliyPay выполнен!', 'success');
+        showNotification('✅ Перевод выполнен!', 'success');
         e.target.reset();
         refreshProfile();
     } catch (err) {
@@ -1226,7 +1689,6 @@ function handleTransfer(e) {
     }
 }
 
-/* ---------- ПОПОЛНЕНИЕ ---------- */
 function handleDeposit(e) {
     e.preventDefault();
     const btn = e.target.querySelector('button');
@@ -1240,7 +1702,7 @@ function handleDeposit(e) {
         const amount = document.getElementById('depositAmount').value;
         Api.deposit(userId, { amount, currency });
 
-        showNotification(`✅ Счёт PliyPay пополнен на ${SYMBOLS[currency]}${amount}`, 'success');
+        showNotification(`✅ Счёт пополнен на ${SYMBOLS[currency]}${amount}`, 'success');
         e.target.reset();
         refreshProfile();
     } catch (err) {
@@ -1251,21 +1713,19 @@ function handleDeposit(e) {
     }
 }
 
-/* ---------- ПРОФИЛЬ ---------- */
 function handleProfileUpdate(e) {
     e.preventDefault();
     try {
         const userId = Session.get();
         const name = document.getElementById('profileNameInput').value;
         Api.updateProfile(userId, { name });
-        showNotification('✅ Профиль PliyPay обновлён', 'success');
+        showNotification('✅ Профиль обновлён', 'success');
         refreshProfile();
     } catch (err) {
         showNotification(err.message, 'error');
     }
 }
 
-/* ---------- УТИЛИТЫ ---------- */
 function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
@@ -1273,17 +1733,71 @@ function escapeHtml(str) {
 }
 
 function showNotification(message, type = 'info') {
+    // Удаляем старые уведомления
+    document.querySelectorAll('.notification').forEach(n => n.remove());
+
     const n = document.createElement('div');
     n.className = `notification ${type}`;
     n.textContent = message;
     document.body.appendChild(n);
+
+    if (navigator.vibrate) navigator.vibrate(30); // Вибро-отклик
+
     setTimeout(() => {
         n.style.transition = 'opacity 0.3s, transform 0.3s';
         n.style.opacity = '0';
-        n.style.transform = 'translateX(120%)';
+        n.style.transform = 'translateY(-20px)';
         setTimeout(() => n.remove(), 300);
     }, 3000);
 }
+
+/* ============================================================
+   ДОП. МОБИЛЬНЫЕ ФИШКИ
+   ============================================================ */
+
+// Свайп слева направо для открытия сайдбара
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+    if (!dashboardScreen.classList.contains('hidden')) {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+
+        // Свайп слева направо (только если почти горизонтально)
+        if (touchStartX < 40 && dx > 60 && Math.abs(dy) < 50) {
+            openSidebar();
+        }
+        // Свайп справа налево (закрыть)
+        if (dx < -60 && Math.abs(dy) < 50) {
+            closeSidebar();
+        }
+    }
+}, { passive: true });
+
+// Кнопка "Назад" браузера — закрываем сайдбар
+window.addEventListener('popstate', () => {
+    closeSidebar();
+});
+
+// Предотвращаем "отскок" страницы на iOS
+document.addEventListener('touchmove', (e) => {
+    if (document.body.style.overflow === 'hidden') {
+        e.preventDefault();
+    }
+}, { passive: false });
+
+// Обновляем при повороте экрана
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        closeSidebar();
+    }, 300);
+});
 </script>
 
 </body>
